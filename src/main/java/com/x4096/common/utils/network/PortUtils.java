@@ -1,4 +1,4 @@
-package com.github.common.utils.network;
+package com.x4096.common.utils.network;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -35,7 +35,7 @@ public class PortUtils {
      * @param timeout 单位毫秒
      * @return
      */
-    public static boolean isConnect(String host,int port,int timeout){
+    public static boolean isConnect(String host, int port, int timeout){
         Socket connect = new Socket();
         try {
             connect.connect(new InetSocketAddress(host, port),timeout);

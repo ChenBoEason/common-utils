@@ -1,4 +1,4 @@
-package com.github.common.utils.date;
+package com.x4096.common.utils.date;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

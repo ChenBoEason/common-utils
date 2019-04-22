@@ -1,4 +1,4 @@
-package com.github.common.utils.jar;
+package com.x4096.common.utils.jar;
 
 /**
  * @author: 0x4096.peng@gmail.com

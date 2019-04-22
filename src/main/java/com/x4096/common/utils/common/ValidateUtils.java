@@ -1,4 +1,4 @@
-package com.github.common.utils.common;
+package com.x4096.common.utils.common;
 
 import org.apache.commons.lang3.StringUtils;
 

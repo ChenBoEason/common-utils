@@ -1,7 +1,8 @@
-package com.github.common.utils.string;
+package com.x4096.common.utils.string;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -10,9 +11,9 @@ import java.util.stream.Collectors;
 /**
  * @author: 0x4096.peng@gmail.com
  * @date: 2018/12/18
- * @instructions: 字符串工具类,继承lang3的包
+ * @instructions: 字符串工具类
  */
-public class StringUtils extends org.apache.commons.lang3.StringUtils {
+public class StringUtil {
 
     public static String[] chars = new String[] { "a", "b", "c", "d", "e", "f",
             "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
@@ -56,27 +57,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         }
         return shortBuffer.toString();
     }
-
-    /**
-     * 生成指定位数的随机字符串
-     * @param chats
-     * @return
-     */
-    public static String randomUUID(int chats) {
-        if(chats <= 0){
-            throw new IllegalArgumentException("字符串位数不能<=0");
-        }
-        StringBuffer shortBuffer = new StringBuffer();
-        String uuid = randomUUID();
-        for (int i = 0; i < chats; i++) {
-            String str = uuid.substring(i * 4, i * 4 + 4);
-            int x = Integer.parseInt(str, 16);
-            shortBuffer.append(chars[x % 0x3E]);
-        }
-        return shortBuffer.toString();
-    }
-
-
 
 
 }

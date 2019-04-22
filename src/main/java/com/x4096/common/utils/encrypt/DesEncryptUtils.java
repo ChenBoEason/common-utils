@@ -1,4 +1,4 @@
-package com.github.common.utils.encrypt;
+package com.x4096.common.utils.encrypt;
 
 import org.apache.commons.codec.binary.Base64;
 import org.checkerframework.checker.units.qual.K;

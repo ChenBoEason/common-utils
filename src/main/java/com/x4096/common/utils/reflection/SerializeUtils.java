@@ -1,4 +1,7 @@
-package com.github.common.utils.reflection;
+package com.x4096.common.utils.reflection;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
@@ -8,6 +11,8 @@ import java.io.*;
  * @instructions: 序列化工具类
  */
 public class SerializeUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerializeUtils.class);
 
     /**
      * 序列化对象到文件
@@ -28,8 +33,8 @@ public class SerializeUtils {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath));
             out.writeObject(object);
             out.close();
-        } catch (Exception x) {
-            x.printStackTrace();
+        } catch (Exception e) {
+            LOGGER.error("序列号文件输出异常", e);
         }
 
     }
@@ -55,11 +60,10 @@ public class SerializeUtils {
             Object object = in.readObject();
             in.close();
             return object;
-        } catch (Exception x) {
-            x.printStackTrace();
-            return null;
+        } catch (Exception e) {
+            LOGGER.error("读取文件异常", e);
         }
-
+        return null;
     }
 
 

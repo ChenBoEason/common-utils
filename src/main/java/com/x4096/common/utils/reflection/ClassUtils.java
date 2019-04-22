@@ -1,4 +1,4 @@
-package com.github.common.utils.reflection;
+package com.x4096.common.utils.reflection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ import java.util.jar.JarFile;
  */
 public class ClassUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(ClassUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassUtils.class);
 
     /**
      * 系统启动,WEB-INF/classes路径=
@@ -119,7 +119,7 @@ public class ClassUtils {
                                             // 添加到classes
                                             classes.add(Class.forName(packageName + '.' + className));
                                         } catch (ClassNotFoundException e) {
-                                            log.error("添加用户自定义视图类错误 找不到此类的.class文件");
+                                            LOGGER.error("添加用户自定义视图类错误 找不到此类的.class文件");
                                             e.printStackTrace();
                                         }
                                     }
@@ -127,13 +127,12 @@ public class ClassUtils {
                             }
                         }
                     } catch (IOException e) {
-                        log.error("在扫描用户定义视图时从jar包获取文件出错");
-                        e.printStackTrace();
+                        LOGGER.error("在扫描用户定义视图时从jar包获取文件出错", e);
                     }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("IO异常", e);
         }
 
         return classes;
@@ -152,7 +151,7 @@ public class ClassUtils {
         File dir = new File(packagePath);
         // 如果不存在或者 也不是目录就直接返回
         if (!dir.exists() || !dir.isDirectory()) {
-            log.warn("用户定义包名 " + packageName + " 下没有任何文件");
+            LOGGER.warn("用户定义包名 " + packageName + " 下没有任何文件");
             return;
         }
         // 如果存在 就获取包下的所有文件 包括目录
@@ -179,8 +178,7 @@ public class ClassUtils {
                     // 添加到集合中去
                     classes.add(Class.forName(packageName + '.' + className));
                 } catch (ClassNotFoundException e) {
-                    log.error("添加用户自定义视图类错误 找不到此类的.class文件");
-                    e.printStackTrace();
+                    LOGGER.error("添加用户自定义视图类错误 找不到此类的.class文件", e);
                 }
             }
         }
@@ -251,11 +249,6 @@ public class ClassUtils {
             e.printStackTrace();
             return null;
         }
-    }
-
-
-    public static void main(String[] args) {
-
     }
 
 }

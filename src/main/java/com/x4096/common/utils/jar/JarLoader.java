@@ -1,4 +1,4 @@
-package com.github.common.utils.jar;
+package com.x4096.common.utils.jar;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;

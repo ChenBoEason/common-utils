@@ -30,25 +30,31 @@ public class AesEncryptUtils {
     /**
      * 填充方式
      */
-    public static final String PADDING = "AES/ECB/PKCS5Padding";
+    private static final String PADDING = "AES/ECB/PKCS5Padding";
 
     /**
      * 加密算法
      */
-    public static final String KEY_ALGORITHM = "AES";
+    private static final String KEY_ALGORITHM = "AES";
+
+    /**
+     * 加解密key长度
+     */
+    private static final int KEY_LENGTH = 16;
 
 
     /**
      * 加密
+     *
      * @param content
      * @param encryptKey
      * @return
      */
-    public static String encrypt(String content,String encryptKey) {
+    public static String encrypt(String content, String encryptKey) {
         if (content == null || encryptKey == null) {
             throw new IllegalArgumentException("加密内容或加密key不能为null");
         }
-        if( encryptKey.length() != 16 ){
+        if( encryptKey.length() != KEY_LENGTH ){
             throw new IllegalArgumentException("加密的encryptKey必须为16位");
         }
 
@@ -56,9 +62,8 @@ public class AesEncryptUtils {
             Cipher cipher = Cipher.getInstance(PADDING);
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(encryptKey.getBytes(DEFAULT_ENCODING), KEY_ALGORITHM));
             byte[] bytes = cipher.doFinal(content.getBytes(DEFAULT_ENCODING));
-            String result = Base64.encodeBase64String(bytes);
             /* 解决Base64加密换行问题 */
-            return result;
+            return Base64.encodeBase64String(bytes);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,7 +76,7 @@ public class AesEncryptUtils {
      * @return
      */
     public static String encrypt(String content) {
-        return encrypt(content,KEY);
+        return encrypt(content, KEY);
     }
 
     /**
@@ -84,7 +89,7 @@ public class AesEncryptUtils {
         if (content == null || decryptKey == null) {
             throw new IllegalArgumentException("解密内容或解密key不能为null");
         }
-        if( decryptKey.length() != 16 ){
+        if( decryptKey.length() != KEY_LENGTH){
             throw new IllegalArgumentException("解密的decryptKey必须为16位");
         }
 
@@ -106,7 +111,7 @@ public class AesEncryptUtils {
      * @return
      */
     public static String decrypt(String content) {
-        return decrypt(content,KEY);
+        return decrypt(content, KEY);
     }
 
 }

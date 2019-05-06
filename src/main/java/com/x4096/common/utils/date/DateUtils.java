@@ -91,6 +91,7 @@ public class DateUtils {
 
     /**
      * 根据当前时间获取过去几天的日期
+     *
      * @param past
      * @return
      */
@@ -120,13 +121,14 @@ public class DateUtils {
         if (w < 0){
             w = 0;
         }
-        return w==0||w==6;
+        return w==0 || w==6;
     }
 
 
 
     /**
      * 获取星期几
+     *
      * @param date
      * @return
      */
@@ -139,6 +141,7 @@ public class DateUtils {
 
     /**
      * 比较日期
+     *
      * @param standDate
      * @param desDate
      * @return
@@ -155,6 +158,7 @@ public class DateUtils {
 
     /**
      * 将年月日时分秒转成Long类型
+     *
      * @param dateTime
      * @return
      */
@@ -170,6 +174,7 @@ public class DateUtils {
 
     /**
      * 相差多少分钟
+     *
      * @param beginDate
      * @param endDate
      * @return

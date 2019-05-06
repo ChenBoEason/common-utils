@@ -24,6 +24,7 @@ public class StringUtil {
 
     /**
      * 将以逗号分隔的字符串转换成字符串集合
+     *
      * @param str
      * @return
      */
@@ -45,6 +46,7 @@ public class StringUtil {
 
     /**
      * 随机生成 8 位 字符串
+     *
      * @return
      */
     public static String random8UUID() {

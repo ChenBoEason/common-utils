@@ -42,7 +42,7 @@ public class IdCardUtils {
     };
 
     /** 第18位校检码 */
-    public static final String verifyCode[] = {
+    public static final String VERIFY_CODE[] = {
             "1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2"
     };
 
@@ -54,18 +54,18 @@ public class IdCardUtils {
     /**
      * 城市
      */
-    private static Map<String, String> cityCodes = new HashMap<String, String>();
+    private static Map<String, String> cityCodes = new HashMap<String, String>(34);
 
     /**
      * 台湾身份首字母对应数字
      */
-    private static Map<String, Integer> twFirstCode = new HashMap<String, Integer>();
+    private static Map<String, Integer> twFirstCode = new HashMap<String, Integer>(25);
 
 
     /**
      * 香港身份首字母对应数字
      */
-    public static Map<String, Integer> hkFirstCode = new HashMap<String, Integer>();
+    public static Map<String, Integer> hkFirstCode = new HashMap<String, Integer>(9);
 
 
     static {
@@ -163,8 +163,9 @@ public class IdCardUtils {
                 e.printStackTrace();
             }
             Calendar cal = Calendar.getInstance();
-            if (birthDate != null)
+            if (birthDate != null){
                 cal.setTime(birthDate);
+            }
             // 获取出生年(完全表现形式,如：2010)
             String sYear = String.valueOf(cal.get(Calendar.YEAR));
             idCard18 = idCard.substring(0, 6) + sYear + idCard.substring(8);
@@ -189,8 +190,14 @@ public class IdCardUtils {
 
     /**
      * 验证身份证是否合法
+     *
+     * @param idCard
+     * @return
      */
     public static boolean validateCard(String idCard) {
+        if(idCard == null || "".equals(idCard)){
+            return false;
+        }
         String card = idCard.trim();
         if (validateIdCard18(card)) {
             return true;
@@ -200,7 +207,7 @@ public class IdCardUtils {
         }
         String[] cardval = validateIdCard10(card);
         if (cardval != null) {
-            if (cardval[2].equals("true")) {
+            if ("true".equals(cardval[2])) {
                 return true;
             }
         }
@@ -601,6 +608,8 @@ public class IdCardUtils {
     public static boolean isNum(String val) {
         return val == null || "".equals(val) ? false : val.matches("^[0-9]*$");
     }
+
+
 
     /**
      * 验证小于当前日期 是否有效

@@ -19,19 +19,19 @@ public class HttpSyncConfig {
     private int maxConPerRoute = 20;
 
     /**
-     * 设置等待数据超时时间默认5秒钟,单位秒
+     * 设置等待数据超时时间默认5秒钟,单位毫秒
      */
-    private int socketTimeout = 5;
+    private int socketTimeout = 5_000;
 
     /**
-     * 连接池取连接的超时时间,单位秒,默认5秒
+     * 连接池取连接的超时时间,单位毫秒,默认5秒
      */
-    private int connectionRequestTimeout = 5;
+    private int connectionRequestTimeout = 5_000;
 
     /**
-     * 连接超时,单位秒,默认5秒
+     * 连接超时,单位毫秒,默认5秒
      */
-    private int connectTimeout = 5;
+    private int connectTimeout = 5_000;
 
     public HttpSyncConfig() {
     }

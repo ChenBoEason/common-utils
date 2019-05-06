@@ -1,7 +1,6 @@
 package com.x4096.common.utils.encrypt;
 
 import org.apache.commons.codec.binary.Base64;
-import org.checkerframework.checker.units.qual.K;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -28,7 +27,7 @@ public class DesEncryptUtils {
     private static final String PADDING = "DES/ECB/PKCS5Padding";
 
     /**
-     *
+     * 默认编码集
      */
     private static final String DEFAULT_ENCODING = "utf-8";
 
@@ -39,7 +38,14 @@ public class DesEncryptUtils {
 
 
     /**
+     * 加解密key长度
+     */
+    private static final int KEY_LENGTH = 16;
+
+
+    /**
      * 加密
+     *
      * @param content
      * @return
      */
@@ -50,6 +56,7 @@ public class DesEncryptUtils {
 
     /**
      * 加密
+     *
      * @param content 待加密内容
      * @param encryptKey 加密的密钥
      * @return
@@ -117,7 +124,7 @@ public class DesEncryptUtils {
         if (content == null || decryptKey == null) {
             throw new IllegalArgumentException("解密内容或解密key不能为null");
         }
-        if( decryptKey.length() != 16 ){
+        if( decryptKey.length() != KEY_LENGTH ){
             throw new IllegalArgumentException("解密的encryptKey必须为16位");
         }
 
@@ -131,6 +138,7 @@ public class DesEncryptUtils {
 
     /**
      * 解密
+     *
      * @param src
      * @param key
      * @return

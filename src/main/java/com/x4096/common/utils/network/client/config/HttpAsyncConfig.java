@@ -9,14 +9,14 @@ package com.x4096.common.utils.network.client.config;
 public class HttpAsyncConfig {
 
     /**
-     * 设置等待数据超时时间,单位秒,默认5秒
+     * 设置等待数据超时时间,单位毫秒,默认5秒
      */
-    private int socketTimeout = 5;
+    private int socketTimeout = 5_000;
 
     /**
-     * 连接超时,单位秒,默认5秒
+     * 连接超时,单位毫秒,默认5秒
      */
-    private int connectTimeout = 5;
+    private int connectTimeout = 5_000;
 
     /**
      * 连接池最大连接数,默认100
@@ -29,9 +29,9 @@ public class HttpAsyncConfig {
     private int maxPerRoute = 200;
 
     /**
-     * 从连接池中后去连接的timeout时间,单位秒,默认5秒
+     * 从连接池中后去连接的timeout时间,单位毫秒,默认5秒
      */
-    private int connectionRequestTimeout = 5;
+    private int connectionRequestTimeout = 5_000;
 
     /**
      * http代理相关参数 主机

@@ -12,16 +12,16 @@ public class PortUtils {
 
     /**
      * 检测指定host的指定端口是否能连接,默认连接超时时间2秒
+     *
      * @param host
      * @param port
      * @return
      */
-    public static boolean isConnect(String host,int port){
+    public static boolean isConnect(String host, int port){
         Socket connect = new Socket();
         try {
             connect.connect(new InetSocketAddress(host, port),2000);
-            boolean res = connect.isConnected();
-            return res;
+            return connect.isConnected();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -30,6 +30,7 @@ public class PortUtils {
 
     /**
      * 检测指定host的指定端口是否能连接
+     *
      * @param host
      * @param port
      * @param timeout 单位毫秒
@@ -38,9 +39,8 @@ public class PortUtils {
     public static boolean isConnect(String host, int port, int timeout){
         Socket connect = new Socket();
         try {
-            connect.connect(new InetSocketAddress(host, port),timeout);
-            boolean res = connect.isConnected();
-            return res;
+            connect.connect(new InetSocketAddress(host, port), timeout);
+            return connect.isConnected();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -70,7 +70,7 @@ public class IpUtils {
      *
      * @return
      */
-    public static String getLocalIp() {
+    public static String getLocalIpAddr() {
         InetAddress candidateAddress = null;
         try {
             /* 遍历所有的网络接口 */

@@ -1,10 +1,8 @@
 package com.x4096.common.utils.network.client;
 
-import com.alibaba.fastjson.JSON;
 import com.x4096.common.utils.network.client.config.HttpSyncConfig;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpMessage;
 import org.apache.http.client.config.RequestConfig;
@@ -114,6 +112,11 @@ public class HttpSyncClientUtils {
      */
     public static void close(){
         poolConnManager.close();
+        try {
+            closeableHttpClient.close();
+        } catch (IOException e) {
+            LOGGER.error("HttpClient 关闭异常", e);
+        }
     }
 
     private static CloseableHttpClient getCloseableHttpClient() {
@@ -429,42 +432,5 @@ public class HttpSyncClientUtils {
         }
     }
 
-
-
-    public static void main(String[] args) {
-        HttpSyncConfig httpSyncConfig = new HttpSyncConfig();
-        init(httpSyncConfig);
-
-        String requestUrl = "http://localhost:40960/post";
-
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "value");
-        params.put("姓名", "文章");
-
-        Map<String, String> headers = new HashMap<>();
-        headers.put("name", "value");
-        headers.put("key", "66666666");
-
-
-//        String result = httpSyncPost(requestUrl, JSON.toJSONString(params), headers);
-//        System.out.println(result);
-
-        /*   */
-        List<BasicNameValuePair> pairList = new ArrayList<>();
-        BasicNameValuePair basicNameValuePair = new BasicNameValuePair("name", "文章");
-        BasicNameValuePair basicNameValuePair2 = new BasicNameValuePair("age", "1");
-
-        pairList.add(basicNameValuePair);
-        pairList.add(basicNameValuePair2);
-
-//        String result2 = httpSyncPost("http://localhost:40960/test1", pairList, headers);
-//        System.out.println(result2);
-
-
-        String result3 = httpSyncGet("https://0x4096.com/");
-        System.out.println(result3);
-
-        close();
-    }
 
 }

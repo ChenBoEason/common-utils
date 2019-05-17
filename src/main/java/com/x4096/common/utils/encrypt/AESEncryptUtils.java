@@ -2,6 +2,7 @@ package com.x4096.common.utils.encrypt;
 
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Decoder;
@@ -14,8 +15,9 @@ import javax.crypto.spec.SecretKeySpec;
  * @date: 2018/12/18
  * @instructions: AES加密,对称加密
  */
-public class AesEncryptUtils {
+public class AESEncryptUtils {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AESEncryptUtils.class);
 
     /**
      * 加密 KEY 必须为 16 位
@@ -51,7 +53,7 @@ public class AesEncryptUtils {
      * @return
      */
     public static String encrypt(String content, String encryptKey) {
-        if (content == null || encryptKey == null) {
+        if (StringUtils.isBlank(content) ||  StringUtils.isBlank(encryptKey)) {
             throw new IllegalArgumentException("加密内容或加密key不能为null");
         }
         if( encryptKey.length() != KEY_LENGTH ){
@@ -65,7 +67,7 @@ public class AesEncryptUtils {
             /* 解决Base64加密换行问题 */
             return Base64.encodeBase64String(bytes);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("加密异常, 加密前内容: {}, 加密key: {}", content, encryptKey, e);
         }
         return null;
     }
@@ -85,8 +87,8 @@ public class AesEncryptUtils {
      * @param decryptKey
      * @return
      */
-    public static String decrypt(String content,String decryptKey) {
-        if (content == null || decryptKey == null) {
+    public static String decrypt(String content, String decryptKey) {
+        if (StringUtils.isBlank(content) ||  StringUtils.isBlank(decryptKey)) {
             throw new IllegalArgumentException("解密内容或解密key不能为null");
         }
         if( decryptKey.length() != KEY_LENGTH){
@@ -100,7 +102,7 @@ public class AesEncryptUtils {
             bytes = cipher.doFinal(bytes);
             return new String(bytes, DEFAULT_ENCODING);
         }catch (Exception e){
-            e.printStackTrace();
+            LOGGER.error("解密异常, 解密前内容: {}, 解密key: {}",content, decryptKey, e);
         }
         return null;
     }

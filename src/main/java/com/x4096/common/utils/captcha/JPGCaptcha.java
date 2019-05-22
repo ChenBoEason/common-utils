@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * @Author: peng.zhup
+ * @Author: 0x4096.peng@gmail.com
  * @Project: common-utils
  * @DateTime: 2019/5/19 11:44
  * @Description: JPG 格式验证码

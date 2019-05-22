@@ -3,12 +3,11 @@ package com.x4096.common.utils.captcha;
 import com.x4096.common.utils.captcha.gif.Randoms;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import java.util.UUID;
 
 /**
- * @Author: peng.zhup
+ * @Author: 0x4096.peng@gmail.com
  * @Project: common-utils
  * @DateTime: 2019/5/19 10:15
  * @Description:

@@ -6,8 +6,7 @@ package com.x4096.common.utils.captcha.gif;
  * @author: wuhongjun
  * @version:1.0
  */
-public class Quant
-{
+public class Quant {
     protected static final int netsize = 256; /* number of colours used */
 
     /* four primes near 500 - assume no image has a length so large */

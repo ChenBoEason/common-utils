@@ -14,7 +14,7 @@ import java.io.OutputStream;
 import java.util.Random;
 
 /**
- * @Author: peng.zhup
+ * @Author: 0x4096.peng@gmail.com
  * @Project: common-utils
  * @DateTime: 2019/5/19 15:02
  * @Description: 算数表达式验证码

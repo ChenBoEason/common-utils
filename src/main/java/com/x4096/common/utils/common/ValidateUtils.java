@@ -83,17 +83,19 @@ public class ValidateUtils {
 
     /**
      * 密码格式不能是纯字母或纯数字
-     * @param str
+     *
+     * @param password
      * @return
      */
-    public static boolean validatePassword(String str) {
-        if(str.matches("[a-zA-Z]+") || str.matches("[0-9]+")) {
+    public static boolean validatePassword(String password) {
+        if(StringUtils.isBlank(password)){
+            return false;
+        }
+        if(password.matches("[a-zA-Z]+") || password.matches("[0-9]+")) {
             return false;
         }
         return true;
     }
-
-
 
 
 

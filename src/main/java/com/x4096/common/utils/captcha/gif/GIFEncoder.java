@@ -30,8 +30,7 @@ import java.io.OutputStream;
  * @version 1.03 November 2003
  *
  */
-public class GIFEncoder
-{
+public class GIFEncoder {
     protected int width; // image size
     protected int height;
     protected Color transparent = null; // transparent color if given

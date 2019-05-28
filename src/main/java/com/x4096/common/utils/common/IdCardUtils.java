@@ -1,5 +1,9 @@
 package com.x4096.common.utils.common;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,6 +18,9 @@ import java.util.Map;
  * 参考: https://github.com/javahongxi/whatsmars/blob/master/whatsmars-common/src/main/java/org/hongxi/whatsmars/common/util/IdCardUtils.java
  */
 public class IdCardUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IdCardUtils.class);
+
 
     /**
      * 中国公民身份证号码最小长度
@@ -149,38 +156,42 @@ public class IdCardUtils {
      * @return 18位身份编码
      */
     public static String conver15CardTo18(String idCard) {
-        String idCard18 = "";
-        if (idCard.length() != CHINA_ID_MIN_LENGTH) {
-            return null;
+        if(StringUtils.isBlank(idCard)){
+            throw new NullPointerException("身份证号不能为空!");
         }
+
+        if(StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH){
+            throw new IllegalArgumentException("身份证号只能为15位");
+        }
+
+        String idCard18 = "";
+
         if (isNum(idCard)) {
-            // 获取出生年月日
+            /* 获取出生年月日 */
             String birthday = idCard.substring(6, 12);
             Date birthDate = null;
             try {
                 birthDate = new SimpleDateFormat("yyMMdd").parse(birthday);
             } catch (ParseException e) {
-                e.printStackTrace();
+                LOGGER.error("身份证生日信息格式化异常", e);
             }
             Calendar cal = Calendar.getInstance();
             if (birthDate != null){
                 cal.setTime(birthDate);
             }
-            // 获取出生年(完全表现形式,如：2010)
+            /* 获取出生年(完全表现形式,如：2010) */
             String sYear = String.valueOf(cal.get(Calendar.YEAR));
             idCard18 = idCard.substring(0, 6) + sYear + idCard.substring(8);
-            // 转换字符数组
+            /* 转换字符数组 */
             char[] cArr = idCard18.toCharArray();
-            if (cArr != null) {
-                int[] iCard = convertCharToInt(cArr);
-                int iSum17 = getPowerSum(iCard);
-                // 获取校验位
-                String sVal = getCheckCode18(iSum17);
-                if (sVal.length() > 0) {
-                    idCard18 += sVal;
-                } else {
-                    return null;
-                }
+            int[] iCard = convertCharToInt(cArr);
+            int iSum17 = getPowerSum(iCard);
+            /* 获取校验位 */
+            String sVal = getCheckCode18(iSum17);
+            if (sVal.length() > 0) {
+                idCard18 += sVal;
+            } else {
+                return null;
             }
         } else {
             return null;
@@ -195,17 +206,19 @@ public class IdCardUtils {
      * @return
      */
     public static boolean validateCard(String idCard) {
-        if(idCard == null || "".equals(idCard)){
+        if(StringUtils.isBlank(idCard)
+                || StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH
+                || StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH){
             return false;
         }
-        String card = idCard.trim();
-        if (validateIdCard18(card)) {
+
+        if (is18IdCard(idCard)) {
             return true;
         }
-        if (validateIdCard15(card)) {
+        if (is15IdCard(idCard)) {
             return true;
         }
-        String[] cardval = validateIdCard10(card);
+        String[] cardval = validateIdCard10(idCard);
         if (cardval != null) {
             if ("true".equals(cardval[2])) {
                 return true;
@@ -220,25 +233,25 @@ public class IdCardUtils {
      * @param idCard 身份编码
      * @return 是否合法
      */
-    public static boolean validateIdCard18(String idCard) {
+    public static boolean is18IdCard(String idCard) {
+        if(StringUtils.isBlank(idCard) || StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH){
+            return false;
+        }
+
         boolean bTrue = false;
-        if (idCard.length() == CHINA_ID_MAX_LENGTH) {
-            // 前17位
-            String code17 = idCard.substring(0, 17);
-            // 第18位
-            String code18 = idCard.substring(17, CHINA_ID_MAX_LENGTH);
-            if (isNum(code17)) {
-                char[] cArr = code17.toCharArray();
-                if (cArr != null) {
-                    int[] iCard = convertCharToInt(cArr);
-                    int iSum17 = getPowerSum(iCard);
-                    // 获取校验位
-                    String val = getCheckCode18(iSum17);
-                    if (val.length() > 0) {
-                        if (val.equalsIgnoreCase(code18)) {
-                            bTrue = true;
-                        }
-                    }
+        /* 前17位 */
+        String code17 = idCard.substring(0, 17);
+        /* 第18位 */
+        String code18 = idCard.substring(17, CHINA_ID_MAX_LENGTH);
+        if (isNum(code17)) {
+            char[] cArr = code17.toCharArray();
+            int[] iCard = convertCharToInt(cArr);
+            int iSum17 = getPowerSum(iCard);
+            /* 获取校验位 */
+            String val = getCheckCode18(iSum17);
+            if (val.length() > 0) {
+                if (val.equalsIgnoreCase(code18)) {
+                    bTrue = true;
                 }
             }
         }
@@ -251,10 +264,11 @@ public class IdCardUtils {
      * @param idCard 身份编码
      * @return 是否合法
      */
-    public static boolean validateIdCard15(String idCard) {
-        if (idCard.length() != CHINA_ID_MIN_LENGTH) {
+    public static boolean is15IdCard(String idCard) {
+        if(StringUtils.isBlank(idCard) || StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH){
             return false;
         }
+
         if (isNum(idCard)) {
             String proCode = idCard.substring(0, 2);
             if (cityCodes.get(proCode) == null) {
@@ -265,11 +279,14 @@ public class IdCardUtils {
             try {
                 birthDate = new SimpleDateFormat("yy").parse(birthCode.substring(0, 2));
             } catch (ParseException e) {
-                e.printStackTrace();
+                LOGGER.error("身份证生日信息格式化异常", e);
             }
             Calendar cal = Calendar.getInstance();
-            if (birthDate != null)
+
+            if (birthDate != null){
                 cal.setTime(birthDate);
+            }
+
             if (!validateDate(cal.get(Calendar.YEAR), Integer.valueOf(birthCode.substring(2, 4)),
                     Integer.valueOf(birthCode.substring(4, 6)))) {
                 return false;
@@ -300,7 +317,6 @@ public class IdCardUtils {
         if (idCard.matches("^[a-zA-Z][0-9]{9}$")) {
             // 台湾
             info[0] = "台湾";
-            System.out.println("11111");
             String char2 = idCard.substring(1, 2);
             if (char2.equals("1")) {
                 info[1] = "M";
@@ -314,7 +330,7 @@ public class IdCardUtils {
                 System.out.println("NNNN");
                 return info;
             }
-            info[2] = validateTWCard(idCard) ? "true" : "false";
+            info[2] = isTWCard(idCard) ? "true" : "false";
         } else if (idCard.matches("^[1|5|7][0-9]{6}\\(?[0-9A-Z]\\)?$")) {
             // 澳门
             info[0] = "澳门";
@@ -337,7 +353,8 @@ public class IdCardUtils {
      * @param idCard 身份证号码
      * @return 验证码是否符合
      */
-    public static boolean validateTWCard(String idCard) {
+    public static boolean isTWCard(String idCard) {
+        // TODO
         String start = idCard.substring(0, 1);
         String mid = idCard.substring(1, 9);
         String end = idCard.substring(9, 10);
@@ -354,18 +371,15 @@ public class IdCardUtils {
 
     /**
      * 验证香港身份证号码(存在Bug，部份特殊身份证无法检查)
-     * <p>
      * 身份证前2位为英文字符，如果只出现一个英文字符则表示第一位是空格，对应数字58 前2位英文字符A-Z分别对应数字10-35
      * 最后一位校验码为0-9的数字加上字符"A"，"A"代表10
-     * </p>
-     * <p>
      * 将身份证号码全部转换为数字，分别对应乘9-1相加的总和，整除11则证件号码有效
-     * </p>
      *
      * @param idCard 身份证号码
      * @return 验证码是否符合
      */
     public static boolean validateHKCard(String idCard) {
+        // TODO
         String card = idCard.replaceAll("[\\(|\\)]", "");
         Integer sum = 0;
         if (card.length() == 9) {
@@ -486,8 +500,14 @@ public class IdCardUtils {
      * @return 年龄
      */
     public static int getAgeByIdCard(String idCard) {
+        if(StringUtils.isBlank(idCard)
+            || StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH
+            || StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH){
+            throw new IllegalArgumentException("请输入正确的身份证号码!");
+        }
+
         int iAge = 0;
-        if (idCard.length() == CHINA_ID_MIN_LENGTH) {
+        if (StringUtils.length(idCard) == CHINA_ID_MIN_LENGTH) {
             idCard = conver15CardTo18(idCard);
         }
         String year = idCard.substring(6, 10);
@@ -504,13 +524,16 @@ public class IdCardUtils {
      * @return 生日(yyyy-MM-dd)
      */
     public static String getBirthByIdCard(String idCard) {
-        Integer len = idCard.length();
-        if (len < CHINA_ID_MIN_LENGTH) {
-            return null;
-        } else if (len == CHINA_ID_MIN_LENGTH) {
+        if(StringUtils.isBlank(idCard)
+                || StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH
+                || StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH){
+            throw new IllegalArgumentException("请输入正确的身份证号码!");
+        }
+
+       if (StringUtils.length(idCard) == CHINA_ID_MIN_LENGTH) {
             idCard = conver15CardTo18(idCard);
         }
-        return idCard.substring(6, 10)+"-"+idCard.substring(10,12)+"-"+idCard.substring(12,14);
+        return idCard.substring(6, 10) + "-" + idCard.substring(10,12) + "-" + idCard.substring(12,14);
     }
 
     /**
@@ -520,10 +543,13 @@ public class IdCardUtils {
      * @return 生日(yyyy)
      */
     public static Short getYearByIdCard(String idCard) {
-        Integer len = idCard.length();
-        if (len < CHINA_ID_MIN_LENGTH) {
-            return null;
-        } else if (len == CHINA_ID_MIN_LENGTH) {
+        if(StringUtils.isBlank(idCard)
+                || StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH
+                || StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH){
+            throw new IllegalArgumentException("请输入正确的身份证号码!");
+        }
+
+         if (StringUtils.length(idCard) == CHINA_ID_MIN_LENGTH) {
             idCard = conver15CardTo18(idCard);
         }
         return Short.valueOf(idCard.substring(6, 10));
@@ -536,10 +562,13 @@ public class IdCardUtils {
      * @return 生日(MM)
      */
     public static Short getMonthByIdCard(String idCard) {
-        Integer len = idCard.length();
-        if (len < CHINA_ID_MIN_LENGTH) {
-            return null;
-        } else if (len == CHINA_ID_MIN_LENGTH) {
+        if(StringUtils.isBlank(idCard)
+                || StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH
+                || StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH){
+            throw new IllegalArgumentException("请输入正确的身份证号码!");
+        }
+
+        if (StringUtils.length(idCard) == CHINA_ID_MIN_LENGTH) {
             idCard = conver15CardTo18(idCard);
         }
         return Short.valueOf(idCard.substring(10, 12));
@@ -553,10 +582,8 @@ public class IdCardUtils {
      * @return 生日(dd)
      */
     public static Short getDateByIdCard(String idCard) {
-        Integer len = idCard.length();
-        if (len < CHINA_ID_MIN_LENGTH) {
-            return null;
-        } else if (len == CHINA_ID_MIN_LENGTH) {
+
+        if (StringUtils.length(idCard) == CHINA_ID_MIN_LENGTH) {
             idCard = conver15CardTo18(idCard);
         }
         return Short.valueOf(idCard.substring(12, 14));

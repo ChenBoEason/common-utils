@@ -40,7 +40,7 @@ public class StringUtil {
      * 随机生成32位字符串
      * @return
      */
-    public static String randomUUID(){
+    public static String UUID(){
         return UUID.randomUUID().toString().replace("-","");
     }
 
@@ -49,15 +49,15 @@ public class StringUtil {
      *
      * @return
      */
-    public static String random8UUID() {
-        StringBuffer shortBuffer = new StringBuffer();
-        String uuid = randomUUID();
+    public static String random8Chars() {
+        StringBuilder stringBuilder = new StringBuilder();
+        String uuid = UUID();
         for (int i = 0; i < 8; i++) {
             String str = uuid.substring(i * 4, i * 4 + 4);
             int x = Integer.parseInt(str, 16);
-            shortBuffer.append(chars[x % 0x3E]);
+            stringBuilder.append(chars[x % 0x3E]);
         }
-        return shortBuffer.toString();
+        return stringBuilder.toString();
     }
 
 

@@ -1,5 +1,8 @@
 package com.x4096.common.utils.network;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -12,6 +15,8 @@ import java.util.Enumeration;
  * @instructions: IP 地址工具集, 包括网络请求IP, 本地IP(支持多网卡,只获取主机IP地址)
  */
 public class IpUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IpUtils.class);
 
     private static final String LOCAL_HOST_V4 = "127.0.0.1";
 
@@ -43,12 +48,12 @@ public class IpUtils {
         if(ipAddress == null || ipAddress.length() == 0 || UNKNOWN.equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getRemoteAddr();
             if(LOCAL_HOST_V4.equals(ipAddress) || LOCAL_HOST_V6.equals(ipAddress)){
-                /* 根据网卡取本机配置的IP*/
-                InetAddress inet=null;
+                /* 根据网卡取本机配置的IP */
+                InetAddress inet = null;
                 try {
                     inet = InetAddress.getLocalHost();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    LOGGER.error("", e);
                 }
                 ipAddress= inet.getHostAddress();
             }
@@ -56,8 +61,8 @@ public class IpUtils {
 
         /* 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割 */
         if(ipAddress != null && ipAddress.length() > IP_LENGTH){
-            if(ipAddress.indexOf(SEPARATOR)>0){
-                ipAddress = ipAddress.substring(0,ipAddress.indexOf(SEPARATOR));
+            if(ipAddress.indexOf(SEPARATOR) > 0){
+                ipAddress = ipAddress.substring(0, ipAddress.indexOf(SEPARATOR));
             }
         }
 
@@ -103,17 +108,9 @@ public class IpUtils {
             }
             return jdkSuppliedAddress.getHostAddress();
         } catch (Exception e) {
-            UnknownHostException unknownHostException = new UnknownHostException(
-                    "Failed to determine LAN address: " + e);
-            unknownHostException.initCause(e);
-            try {
-                throw unknownHostException;
-            } catch (UnknownHostException e1) {
-                e1.printStackTrace();
-            }
-            return null;
+            LOGGER.error("", e);
         }
-
+        return null;
     }
 
     /**

@@ -101,8 +101,11 @@ public class ValidateUtils {
      */
     public static boolean isWeakPassword(String password) {
         if(StringUtils.isBlank(password)
-            || password.matches("[a-zA-Z]+")
-            || password.matches("[0-9]+")) {
+                || password.matches("[a-zA-Z]+")
+                || password.matches("[0-9]+")){
+            return false;
+        }
+        if (password.matches("[a-zA-Z]+") || password.matches("[0-9]+")) {
             return false;
         }
         return true;
@@ -115,14 +118,12 @@ public class ValidateUtils {
      * @param url
      * @return
      */
-    public static boolean isUrl(String url){
+    public static boolean isUrl(String url) {
         if(StringUtils.isBlank(url)){
             return false;
         }
         UrlValidator urlValidator = new UrlValidator(schemas);
         return urlValidator.isValid(url);
     }
-
-
 
 }

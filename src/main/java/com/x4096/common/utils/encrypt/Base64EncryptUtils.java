@@ -25,7 +25,7 @@ public class Base64EncryptUtils {
      */
     public static byte[] decode(String str) {
         if(str == null){
-            throw new IllegalArgumentException("字符串内容不能为空!");
+            throw new IllegalArgumentException("字符串内容不能为null");
         }
         return new Base64().decode(str.getBytes());
     }
@@ -42,6 +42,10 @@ public class Base64EncryptUtils {
     }
 
 
+
+    public static void main(String[] args) {
+        System.out.println(decode(""));
+    }
 
 
 }

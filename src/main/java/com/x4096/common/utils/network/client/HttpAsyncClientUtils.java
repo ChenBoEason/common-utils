@@ -115,15 +115,10 @@ public class HttpAsyncClientUtils {
         PoolingNHttpClientConnectionManager conMgr = new PoolingNHttpClientConnectionManager(
                 ioReactor, sessionStrategyRegistry);
 
-        if (httpAsyncConfig.getPoolMaxSize() > 0) {
-            conMgr.setMaxTotal(httpAsyncConfig.getPoolMaxSize());
-        }
 
-        if (httpAsyncConfig.getMaxPerRoute() > 0) {
-            conMgr.setDefaultMaxPerRoute(httpAsyncConfig.getMaxPerRoute());
-        } else {
-            conMgr.setDefaultMaxPerRoute(10);
-        }
+        conMgr.setMaxTotal(httpAsyncConfig.getPoolMaxSize());
+        conMgr.setDefaultMaxPerRoute(httpAsyncConfig.getMaxPerRoute());
+
 
         ConnectionConfig connectionConfig = ConnectionConfig.custom()
                 .setMalformedInputAction(CodingErrorAction.IGNORE)

@@ -2,6 +2,7 @@ package com.x4096.common.utils.encrypt;
 
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Decoder;
@@ -52,7 +53,7 @@ public class AESEncryptUtils {
      * @return
      */
     public static String encrypt(String content, String encryptKey) {
-        if (content == null || encryptKey == null) {
+        if (StringUtils.isBlank(content) ||  StringUtils.isBlank(encryptKey)) {
             throw new IllegalArgumentException("加密内容或加密key不能为null");
         }
         if( encryptKey.length() != KEY_LENGTH ){
@@ -65,7 +66,7 @@ public class AESEncryptUtils {
             /* 解决Base64加密换行问题 */
             return Base64.encodeBase64String(cipher.doFinal(content.getBytes(DEFAULT_ENCODING)));
         } catch (Exception e) {
-            LOGGER.error("加密异常, 加密内容: {}, 加密KEY: {}", content, encryptKey, e);
+            LOGGER.error("加密异常, 加密前内容: {}, 加密key: {}", content, encryptKey, e);
         }
         return null;
     }
@@ -91,6 +92,7 @@ public class AESEncryptUtils {
         if (content == null || decryptKey == null) {
             throw new IllegalArgumentException("解密内容或解密key不能为null");
         }
+
         if( decryptKey.length() != KEY_LENGTH){
             throw new IllegalArgumentException("解密的decryptKey必须为16位");
         }
@@ -102,7 +104,7 @@ public class AESEncryptUtils {
             bytes = cipher.doFinal(bytes);
             return new String(bytes, DEFAULT_ENCODING);
         }catch (Exception e){
-            LOGGER.error("解密异常, 解密内容: {}, 解密KEY: {}", content, decryptKey, e);
+            LOGGER.error("解密异常, 解密前内容: {}, 解密key: {}",content, decryptKey, e);
         }
         return null;
     }

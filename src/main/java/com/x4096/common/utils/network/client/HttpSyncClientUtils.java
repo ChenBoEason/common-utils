@@ -18,6 +18,8 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -254,6 +256,26 @@ public class HttpSyncClientUtils {
         return httpSyncPost(requestUrl, list, requestHeader);
     }
 
+
+
+    public static String httpSyncPost2(String requestUrl, Map<String, String> requestHeader) throws UnsupportedEncodingException {
+
+        if(StringUtils.isBlank(requestUrl)){
+            throw new NullPointerException("requestUrl不能为空");
+        }
+
+        HttpPost httpPost = new HttpPost(requestUrl);
+
+        byte[] str = "hhh中文".getBytes("ISO-8859-7");
+        ByteArrayEntity byteArrayEntity = new ByteArrayEntity(str, ContentType.APPLICATION_JSON);
+
+        httpPost.setEntity(byteArrayEntity);
+
+        /* 构建请求头 */
+        buildRequestHeader(httpPost, requestHeader);
+
+        return result(httpPost);
+    }
 
 
     /**

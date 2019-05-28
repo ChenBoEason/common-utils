@@ -1,6 +1,7 @@
 package com.x4096.common.utils.network.client;
 
 import okhttp3.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,20 +129,39 @@ public class OkClientUtils {
         call.enqueue(callback);
     }
 
-    public static String OkSyncGet(String url) throws IOException {
 
+    /**
+     * 同步 GET 方法请求
+     *
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    public static String OkSyncGet(String url) {
+        if(StringUtils.isBlank(url)) {
+            throw new NullPointerException("请求 url 不能为空");
+        }
         OkHttpClient okClient = getOkHttpClient();
 
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        try (Response response = okClient.newCall(request).execute()) {
 
-            return response.body().string();
+        Response response = null;
+        try {
+            response = okClient.newCall(request).execute();
+            response.body().string();
+        } catch (IOException e) {
+            LOGGER.error("同步 GET 请求异常", e);
+        }finally {
+            if(response != null){
+                response.close();
+            }
         }
+        return null;
     }
 
-    public static void OkAsyncGet(String url) throws IOException {
+    public static void OkAsyncGet(String url) {
 
         OkHttpClient okClient = getOkHttpClient();
 

@@ -1,6 +1,11 @@
 package com.x4096.common.utils.network.client;
 
+import com.x4096.common.utils.charset.Charset;
+import com.x4096.common.utils.common.ValidateUtils;
 import com.x4096.common.utils.network.client.config.HttpAsyncConfig;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.CharSet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpHost;
@@ -13,16 +18,18 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.config.ConnectionConfig;
 import org.apache.http.config.Lookup;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.*;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
@@ -34,15 +41,21 @@ import org.apache.http.nio.conn.SchemeIOSessionStrategy;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.nio.reactor.ConnectingIOReactor;
 import org.apache.http.nio.reactor.IOReactorException;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.CodingErrorAction;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,8 +70,10 @@ public class HttpAsyncClientUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpAsyncClientUtils.class);
 
 
-    private static final String DEFAULT_CHARSET = "UTF-8";
+    private static final String DEFAULT_CHARSET = Charset.UTF_8;
 
+
+    private static PoolingNHttpClientConnectionManager poolingNHttpClientConnectionManager;
 
     /**
      * 异步httpclient
@@ -79,7 +94,14 @@ public class HttpAsyncClientUtils {
                 .setConnectTimeout(httpAsyncConfig.getConnectTimeout())
                 .setSocketTimeout(httpAsyncConfig.getSocketTimeout()).build();
 
-        SSLContext sslcontext = SSLContexts.createDefault();
+        SSLContext sslcontext = null;
+        try {
+            sslcontext = SSLContexts.custom().loadTrustMaterial(null,
+                    new TrustSelfSignedStrategy())
+                    .build();
+        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+            LOGGER.error("HttpSyncClientUtils 初始化异常", e);
+        }
 
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
                 httpAsyncConfig.getProxyUsername(), httpAsyncConfig.getProxyPassword());
@@ -112,12 +134,10 @@ public class HttpAsyncClientUtils {
             LOGGER.error("HttpAsyncClientUtils 初始化异常", e);
         }
 
-        PoolingNHttpClientConnectionManager conMgr = new PoolingNHttpClientConnectionManager(
+        poolingNHttpClientConnectionManager = new PoolingNHttpClientConnectionManager(
                 ioReactor, sessionStrategyRegistry);
-
-
-        conMgr.setMaxTotal(httpAsyncConfig.getPoolMaxSize());
-        conMgr.setDefaultMaxPerRoute(httpAsyncConfig.getMaxPerRoute());
+        poolingNHttpClientConnectionManager.setMaxTotal(httpAsyncConfig.getPoolMaxSize());
+        poolingNHttpClientConnectionManager.setDefaultMaxPerRoute(httpAsyncConfig.getMaxPerRoute());
 
 
         ConnectionConfig connectionConfig = ConnectionConfig.custom()
@@ -133,20 +153,23 @@ public class HttpAsyncClientUtils {
                 .register(AuthSchemes.SPNEGO, new SPNegoSchemeFactory())
                 .register(AuthSchemes.KERBEROS, new KerberosSchemeFactory())
                 .build();
-        conMgr.setDefaultConnectionConfig(connectionConfig);
+        poolingNHttpClientConnectionManager.setDefaultConnectionConfig(connectionConfig);
 
         if (proxy) {
-            closeableHttpAsyncClient = HttpAsyncClients.custom().setConnectionManager(conMgr)
+            closeableHttpAsyncClient = HttpAsyncClients.custom().setConnectionManager(poolingNHttpClientConnectionManager)
+                    .setConnectionManagerShared(true)
                     .setDefaultCredentialsProvider(credentialsProvider)
                     .setDefaultAuthSchemeRegistry(authSchemeRegistry)
                     .setProxy(new HttpHost(httpAsyncConfig.getProxyHost(), httpAsyncConfig.getProxyPort()))
                     .setDefaultCookieStore(new BasicCookieStore())
                     .setDefaultRequestConfig(requestConfig).build();
         } else {
-            closeableHttpAsyncClient = HttpAsyncClients.custom().setConnectionManager(conMgr)
+            closeableHttpAsyncClient = HttpAsyncClients.custom().setConnectionManager(poolingNHttpClientConnectionManager)
+                    .setConnectionManagerShared(true)
                     .setDefaultCredentialsProvider(credentialsProvider)
                     .setDefaultAuthSchemeRegistry(authSchemeRegistry)
-                    .setDefaultCookieStore(new BasicCookieStore()).build();
+                    .setDefaultCookieStore(new BasicCookieStore())
+                    .setDefaultRequestConfig(requestConfig).build();
         }
 
     }
@@ -161,6 +184,7 @@ public class HttpAsyncClientUtils {
      *
      */
     public void close(){
+        poolingNHttpClientConnectionManager.closeExpiredConnections();
         try {
             closeableHttpAsyncClient.close();
         } catch (IOException e) {
@@ -169,154 +193,154 @@ public class HttpAsyncClientUtils {
     }
 
 
+    /**
+     * 异步 POST 请求
+     *
+     * @param requestUrl        请求地址
+     * @param callback          回调方法
+     */
+    public static void post(String requestUrl, FutureCallback callback)  {
+        post(requestUrl, "", null, callback);
+    }
 
     /**
-     * 向指定的url发送一次异步post请求,参数是字符串
-     * @param requestUrl    请求地址
-     * @param postString 请求参数,格式是json.toString()
-     * @param urlParams  请求参数,格式是String
-     * @param callback   回调方法,格式是FutureCallback
-     * @return 返回结果, 请求失败时返回null
-     * @apiNote http接口处用 @RequestParam接收参数
+     * 异步 POST 请求
+     *
+     * @param requestUrl        请求地址
+     * @param jsonString        请求参数 json 格式 exp: {"key1": "value1", "key2": "value2"}
+     * @param callback          回调方法
      */
-    public static void httpAsyncPost(String requestUrl, Map<String, String> headers, String postString,
-                                     String urlParams, FutureCallback callback)  {
+    public static void post(String requestUrl, String jsonString, FutureCallback callback)  {
+        post(requestUrl, jsonString, null, callback);
+    }
+
+
+    /**
+     * 异步 POST 请求
+     *
+     * @param requestUrl        请求地址
+     * @param jsonString        请求参数 json 格式 exp: {"key1": "value1", "key2": "value2"}
+     * @param requestHeader           http 请求头
+     * @param callback          回调方法
+     */
+    public static void post(String requestUrl, String jsonString, Map<String, String> requestHeader, FutureCallback callback)  {
+        if (StringUtils.isBlank(requestUrl)) {
+            throw new NullPointerException("请求 URL 不能为空");
+        }
+
+        if(ValidateUtils.isNotUrl(requestUrl)){
+            throw new IllegalArgumentException("请求 URL 格式错误");
+        }
+
+        HttpPost httpPost = buildHttpPost(requestUrl, null, jsonString, true, requestHeader );
+
+        result(httpPost, callback);
+    }
+
+
+    /**
+     * 异步 POST 请求
+     *
+     * @param requestUrl        请求地址
+     * @param paramsMap         请求参数
+     * @param callback          回调方法
+     */
+    public static void post(String requestUrl, Map<String, String> paramsMap, FutureCallback callback)  {
+        post(requestUrl, paramsMap, null, callback);
+    }
+
+    /**
+     * 异步 POST 请求
+     *
+     * @param requestUrl        请求地址
+     * @param paramsMap         请求参数
+     * @param requestHeader           http 请求头
+     * @param callback          回调方法
+     */
+    public static void post(String requestUrl, Map<String, String> paramsMap, Map<String, String> requestHeader, FutureCallback callback)  {
+        if (StringUtils.isBlank(requestUrl)) {
+            throw new NullPointerException("请求 URL 不能为空");
+        }
+
+        if(ValidateUtils.isNotUrl(requestUrl)){
+            throw new IllegalArgumentException("请求 URL 格式错误");
+        }
+
+        List<BasicNameValuePair> postBody = null;
+
+        if(MapUtils.isNotEmpty(paramsMap)){
+            postBody = new ArrayList<>(paramsMap.size());
+            for(String key : paramsMap.keySet()){
+                BasicNameValuePair basicNameValuePair = new BasicNameValuePair(key, paramsMap.get(key));
+                postBody.add(basicNameValuePair);
+            }
+        }
+
+        HttpPost httpPost = buildHttpPost(requestUrl, postBody, null, false, requestHeader);
+
+        result(httpPost, callback);
+    }
+
+
+
+    /**
+     * 异步 GET 请求
+     *
+     * @param requestUrl        请求 URL
+     * @param callback          回调方法
+     */
+    public static void get(String requestUrl, FutureCallback callback) {
+        get(requestUrl, null, null, callback);
+    }
+
+    /**
+     * 异步 GET 请求
+     *
+     * @param requestUrl        请求 URL
+     * @param urlParams         请求参数,格式: key1=value1&key2=value2
+     * @param callback          回调方法
+     */
+    public static void get(String requestUrl, String urlParams, FutureCallback callback) {
+        get(requestUrl, urlParams, null, callback);
+    }
+
+
+    /**
+     * 异步 GET 请求
+     *
+     * @param requestUrl        请求 URL
+     * @param urlParams         请求参数,格式: key1=value1&key2=value2
+     * @param requestHeader           http 请求头
+     * @param callback          回调方法
+     */
+    public static void get(String requestUrl, String urlParams, Map<String, String> requestHeader, FutureCallback callback)  {
 
         if (StringUtils.isBlank(requestUrl)) {
             throw new NullPointerException("请求 URL 不能为空");
         }
 
-        HttpPost httpPost = buildHttpPost(requestUrl, headers, postString, urlParams);
-
-        postResult(httpPost, callback);
-    }
-
-
-    /**
-     * 向指定的url发送一次异步post请求,参数是字符串
-     *
-     * @param requestUrl   请求地址
-     * @param urlParams 请求参数,格式是List<BasicNameValuePair>
-     * @param callback  回调方法,格式是FutureCallback
-     * @return 返回结果, 请求失败时返回null
-     * @apiNote http接口处用 @RequestParam接收参数
-     */
-    public static void httpAsyncPost(String requestUrl, Map<String, String> headers, List<BasicNameValuePair> postBody,
-                                     List<BasicNameValuePair> urlParams, FutureCallback callback) {
-        if (StringUtils.isBlank(requestUrl)) {
-            throw new NullPointerException("请求 URL 不能为空");
+        if(ValidateUtils.isNotUrl(requestUrl)){
+            throw new IllegalArgumentException("请求 URL 格式错误");
         }
 
-        HttpPost httpPost = buildHttpPost(requestUrl, headers, postBody, urlParams);
+        HttpGet httpGet = buildHttpGet(requestUrl, urlParams, requestHeader);
 
-        postResult(httpPost, callback);
-    }
-
-    /**
-     * 向指定的url发送一次异步get请求,参数是String
-     *
-     * @param requestUrl   请求地址
-     * @param urlParams 请求参数,格式是String
-     * @param callback  回调方法,格式是FutureCallback
-     * @return 返回结果, 请求失败时返回null
-     * @apiNote http接口处用 @RequestParam接收参数
-     */
-    public static void httpAsyncGet(String requestUrl, String urlParams, FutureCallback callback) {
-
-        if ( StringUtils.isBlank(requestUrl)) {
-            throw new NullPointerException("请求 URL 不能为空");
-        }
-
-        HttpGet httpGet = buildHttpGet(requestUrl, urlParams);
-        getResult(httpGet, callback);
+        result(httpGet, callback);
     }
 
 
-    /**
-     * 向指定的url发送一次异步get请求,参数是List<BasicNameValuePair>
-     *
-     * @param requestUrl   请求地址
-     * @param urlParams 请求参数,格式是List<BasicNameValuePair>
-     * @param callback  回调方法,格式是FutureCallback
-     * @return 返回结果, 请求失败时返回null
-     * @apiNote http接口处用 @RequestParam接收参数
-     */
-    public static void httpAsyncGet(String requestUrl, Map<String, String> headers, List<BasicNameValuePair> urlParams, FutureCallback callback)  {
-
-        if (StringUtils.isBlank(requestUrl)) {
-            throw new NullPointerException("请求 URL 不能为空");
-        }
-
-        HttpGet httpGet = buildHttpGet(requestUrl, headers, urlParams);
-
-        getResult(httpGet, callback);
-    }
 
 
     /**
      * 执行异步 POST 请求
      *
-     * @param httpPost
+     * @param httpUriRequest
      * @param futureCallback
      */
-    private static void postResult(HttpPost httpPost, FutureCallback futureCallback){
+    private static void result(HttpUriRequest httpUriRequest, FutureCallback futureCallback){
         CloseableHttpAsyncClient client = getCloseableHttpAsyncClient();
         client.start();
-
-        client.execute(httpPost, futureCallback);
-    }
-
-    /**
-     *
-     * @param httpGet
-     * @param futureCallback
-     */
-    private static void getResult(HttpGet httpGet, FutureCallback futureCallback){
-        CloseableHttpAsyncClient client = getCloseableHttpAsyncClient();
-        client.start();
-
-        client.execute(httpGet, futureCallback);
-    }
-
-
-
-    /**
-     * 构建 HttpPost
-     *
-     * @param requestUrl
-     * @param headers
-     * @param postString
-     * @param urlParams
-     * @return
-     */
-    private static HttpPost buildHttpPost(String requestUrl, Map<String, String> headers, String postString,
-                                  String urlParams){
-
-        HttpPost httpPost = new HttpPost(requestUrl);
-
-        if (null != headers) {
-            for (String header : headers.keySet()) {
-                httpPost.setHeader(header, headers.get(header));
-            }
-        }
-
-        try {
-            if (null != postString) {
-                StringEntity entity = new StringEntity(postString, DEFAULT_CHARSET);
-                entity.setContentEncoding(DEFAULT_CHARSET);
-                entity.setContentType("application/json");
-                httpPost.setEntity(entity);
-            }
-
-            if (null != urlParams) {
-                httpPost.setURI(new URI(httpPost.getURI().toString() + "?" + urlParams));
-            }
-
-        } catch (Exception e) {
-            LOGGER.error("构建 HttpPost 异常", e);
-        }
-
-        return httpPost;
+        client.execute(httpUriRequest, futureCallback);
     }
 
 
@@ -324,96 +348,64 @@ public class HttpAsyncClientUtils {
      * 构建 HttpPost
      *
      * @param requestUrl
-     * @param headers
      * @param postBody
-     * @param urlParams
+     * @param jsonString
+     * @param isJsonString
+     * @param requestHeader
      * @return
      */
-    private static HttpPost buildHttpPost(String requestUrl, Map<String, String> headers, List<BasicNameValuePair> postBody,
-                                  List<BasicNameValuePair> urlParams){
+    private static HttpPost buildHttpPost(String requestUrl, List<BasicNameValuePair> postBody, String jsonString, boolean isJsonString, Map<String, String> requestHeader){
         HttpPost httpPost = new HttpPost(requestUrl);
 
-        if (null != headers) {
-            for (String header : headers.keySet()) {
-                httpPost.setHeader(header, headers.get(header));
-            }
+        if (MapUtils.isNotEmpty(requestHeader)) {
+            requestHeader.forEach((k, v) -> {
+                httpPost.addHeader(k, v);
+            });
         }
 
-        try {
-            if (null != postBody) {
-                UrlEncodedFormEntity entity = new UrlEncodedFormEntity(
-                        postBody, DEFAULT_CHARSET);
-                httpPost.setEntity(entity);
+        if (CollectionUtils.isNotEmpty(postBody)) {
+            UrlEncodedFormEntity entity = null;
+            try {
+                entity = new UrlEncodedFormEntity(postBody, DEFAULT_CHARSET);
+            } catch (UnsupportedEncodingException e) {
+                LOGGER.error("构建 HttpPost 异常", e);
             }
-            if (null != urlParams) {
-                String getUrl = EntityUtils.toString(new UrlEncodedFormEntity(urlParams));
-                httpPost.setURI(new URI(httpPost.getURI().toString() + "?" + getUrl));
-            }
-
-        } catch (Exception e) {
-            LOGGER.error("构建 HttpPost 异常", e);
+            httpPost.setEntity(entity);
         }
+
+
+        if(isJsonString && StringUtils.isNotBlank(jsonString)){
+            StringEntity entity = new StringEntity(jsonString, DEFAULT_CHARSET);
+            entity.setContentType("application/json");
+            httpPost.setEntity(entity);
+        }
+
 
         return httpPost;
     }
+
 
 
     /**
      * 构建 HttpGet
      *
      * @param requestUrl
+     * @param requestHeader
      * @param urlParams
      * @return
      */
-    private static HttpGet buildHttpGet(String requestUrl, String urlParams){
-
+    private static HttpGet buildHttpGet(String requestUrl, String urlParams, Map<String, String> requestHeader){
         HttpGet httpGet = new HttpGet(requestUrl);
+
+        if (MapUtils.isNotEmpty(requestHeader)) {
+            requestHeader.forEach((k, v) -> {
+                httpGet.addHeader(k, v);
+            });
+        }
 
         if (StringUtils.isNotBlank(urlParams)) {
             try {
                 httpGet.setURI(new URI(httpGet.getURI().toString() + "?" + urlParams));
-            } catch (URISyntaxException e) {
-                LOGGER.error("构建 HttpGet 异常", e);
-            }
-        } else {
-            try {
-                httpGet.setURI(new URI(httpGet.getURI().toString()));
-            } catch (URISyntaxException e) {
-                LOGGER.error("构建 HttpGet 异常", e);
-            }
-        }
-        return httpGet;
-    }
-
-    /**
-     * 构建 HttpGet
-     *
-     * @param requestUrl
-     * @param headers
-     * @param urlParams
-     * @return
-     */
-    private static HttpGet buildHttpGet(String requestUrl, Map<String, String> headers, List<BasicNameValuePair> urlParams){
-
-        HttpGet httpGet = new HttpGet(requestUrl);
-
-        if (null != headers) {
-            for (String header : headers.keySet()) {
-                httpGet.setHeader(header, headers.get(header));
-            }
-        }
-
-        if (null != urlParams) {
-
-            String getUrl = null;
-            try {
-                getUrl = EntityUtils.toString(new UrlEncodedFormEntity(urlParams));
-            } catch (IOException e) {
-                LOGGER.error("构建 HttpGet 异常", e);
-            }
-
-            try {
-                httpGet.setURI(new URI(httpGet.getURI().toString() + "?" + getUrl));
             } catch (URISyntaxException e) {
                 LOGGER.error("构建 HttpGet 异常", e);
             }

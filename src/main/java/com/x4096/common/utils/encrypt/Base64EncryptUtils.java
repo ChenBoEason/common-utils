@@ -1,6 +1,10 @@
 package com.x4096.common.utils.encrypt;
 
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * @Author: 0x4096.peng@gmail.com
@@ -10,42 +14,51 @@ import org.apache.commons.codec.binary.Base64;
  */
 public class Base64EncryptUtils {
 
-    /**
-     * 文件读取缓冲区大小
-     */
-    private static final int CACHE_SIZE = 1024;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Base64EncryptUtils.class);
+
+    private static final String DEFAULT_CHARSET = "UTF-8";
 
 
 
     /**
-     * BASE64字符串解码为二进制数据
+     * base64 加密
      *
-     * @param str
-     * @return
+     * @param content       待加密内容
+     * @return              加密后内容
      */
-    public static byte[] decode(String str) {
-        if(str == null){
-            throw new IllegalArgumentException("字符串内容不能为null");
+    public static String encrypt(String content){
+        if(content == null){
+            throw new NullPointerException("加密内容不能为null");
         }
-        return new Base64().decode(str.getBytes());
+        Base64 base64 = new Base64();
+        byte[] textByte = new byte[0];
+        try {
+            textByte = content.getBytes(DEFAULT_CHARSET);
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("不支持的编码集", e);
+        }
+        return base64.encodeToString(textByte);
     }
+
 
 
     /**
-     * 字节数组转换为字符串
+     * base64 解密
      *
-     * @param bytes
-     * @return
+     * @param content       待解密内容
+     * @return              解密后内容
      */
-    public static String encode(byte[] bytes){
-        return new String(new Base64().encode(bytes));
+    public static String decrypt(String content) {
+        if(content == null){
+            throw new NullPointerException("解密内容不能为null");
+        }
+        Base64 base64 = new Base64();
+        try {
+            return new String(base64.decode(content), DEFAULT_CHARSET);
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("不支持的编码集", e);
+        }
+        return null;
     }
-
-
-
-    public static void main(String[] args) {
-        System.out.println(decode(""));
-    }
-
 
 }

@@ -14,7 +14,7 @@ import java.security.SecureRandom;
  * @date: 2019/1/10
  * @instructions: Des加密工具类,对称加密
  */
-public class DesEncryptUtils {
+public class DESEncryptUtils {
 
     /**
      * 加密算法DES
@@ -29,7 +29,7 @@ public class DesEncryptUtils {
     /**
      * 默认编码集
      */
-    private static final String DEFAULT_ENCODING = "utf-8";
+    private static final String DEFAULT_ENCODING = "UTF-8";
 
     /**
      * 加密 KEY
@@ -109,9 +109,9 @@ public class DesEncryptUtils {
      * @param content
      * @return
      */
-    public final static String decrypt(String content ) {
-        return decrypt(content,KEY);
-    }
+    // public final static String decrypt(String content ) {
+    //     return decrypt(content,KEY);
+    // }
 
 
     /**
@@ -120,39 +120,22 @@ public class DesEncryptUtils {
      * @param decryptKey
      * @return
      */
-    public final static String decrypt(String content, String decryptKey ) {
-        if (content == null || decryptKey == null) {
-            throw new IllegalArgumentException("解密内容或解密key不能为null");
-        }
-        if( decryptKey.length() != KEY_LENGTH ){
-            throw new IllegalArgumentException("解密的encryptKey必须为16位");
-        }
+    // public final static String decrypt(String content, String decryptKey ) {
+    //     if (content == null || decryptKey == null) {
+    //         throw new IllegalArgumentException("解密内容或解密key不能为null");
+    //     }
+    //     if( decryptKey.length() != KEY_LENGTH ){
+    //         throw new IllegalArgumentException("解密的encryptKey必须为16位");
+    //     }
+    //
+    //     try {
+    //         return new String(decrypt(Base64.decodeBase64(content),decryptKey.getBytes(DEFAULT_ENCODING)), DEFAULT_ENCODING);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    //     return null;
+    // }
 
-        try {
-            return new String(decrypt(Base64.decodeBase64(content),decryptKey.getBytes(DEFAULT_ENCODING)), DEFAULT_ENCODING);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 解密
-     *
-     * @param src
-     * @param key
-     * @return
-     * @throws Exception
-     */
-    public static byte[] decrypt(byte[] src, byte[] key) throws Exception {
-        SecureRandom sr = new SecureRandom();
-        DESKeySpec dks = new DESKeySpec(key);
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DES);
-        SecretKey securekey = keyFactory.generateSecret(dks);
-        Cipher cipher = Cipher.getInstance(PADDING);
-        cipher.init(Cipher.DECRYPT_MODE, securekey, sr);
-        return cipher.doFinal(src);
-    }
 
     public static void main(String[] args) {
 

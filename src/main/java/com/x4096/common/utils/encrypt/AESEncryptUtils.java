@@ -49,14 +49,15 @@ public class AESEncryptUtils {
      * 加密
      *
      * @param content       待加密内容
-     * @param encryptKey    解密 KEY
+     * @param encryptKey    加密 KEY
      * @return
      */
     public static String encrypt(String content, String encryptKey) {
-        if (StringUtils.isBlank(content) ||  StringUtils.isBlank(encryptKey)) {
-            throw new IllegalArgumentException("加密内容或加密key不能为null");
+        if(content == null || encryptKey == null){
+            throw new IllegalArgumentException("加密内容 content 和 encryptKey 不能为 null");
         }
-        if( encryptKey.length() != KEY_LENGTH ){
+
+        if(StringUtils.length(encryptKey) != KEY_LENGTH){
             throw new IllegalArgumentException("加密的encryptKey必须为16位");
         }
 
@@ -93,7 +94,7 @@ public class AESEncryptUtils {
             throw new IllegalArgumentException("解密内容或解密key不能为null");
         }
 
-        if( decryptKey.length() != KEY_LENGTH){
+        if(StringUtils.length(decryptKey) != KEY_LENGTH){
             throw new IllegalArgumentException("解密的decryptKey必须为16位");
         }
 
@@ -118,5 +119,6 @@ public class AESEncryptUtils {
     public static String decrypt(String content) {
         return decrypt(content, KEY);
     }
+
 
 }

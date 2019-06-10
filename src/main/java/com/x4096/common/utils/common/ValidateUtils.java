@@ -1,5 +1,6 @@
 package com.x4096.common.utils.common;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
@@ -18,15 +19,16 @@ public class ValidateUtils {
      */
     private static final String EMAIL = "^[a-z0-9]([a-z0-9]*[-_\\.\\+]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\\.][a-z]{2,3}([\\.][a-z]{2,4})?$";
 
-    /**
-     * 中国居民身份证
-     */
-    private static final String CARD_ID = "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}(\\d|X|x)$";
 
     /**
      * 中文
      */
     private static final String CHINA_TEXT="[\\u4e00-\\u9fa5]+";
+
+    /**
+     * 中国姓名 [\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}
+     */
+    private static final String CHINA_NAME ="[\\u4E00-\\u9FA5\\uf900-\\ufa2d·s]{2,20}";
 
 
     private static final String PHONE_CHINA_TELECOM = "^1[3578][01379]\\d{8}$";
@@ -35,6 +37,9 @@ public class ValidateUtils {
 
     private static final String PHONE_CHINA_MOBILE = "^(134[012345678]\\d{7}|1[34578][012356789]\\d{8})$";
 
+    /**
+     * 网络协议
+     */
     private static final String[] schemas = {"http", "https"};
 
     /**
@@ -65,30 +70,32 @@ public class ValidateUtils {
                 || Pattern.matches(PHONE_CHINA_MOBILE, phone);
     }
 
-    /**
-     * 检测身份证格式是否正确
-     *
-     * @param idCard
-     * @return
-     */
-    public static boolean isIdCard(String idCard) {
-        if (StringUtils.isBlank(idCard)) {
-            return false;
-        }
-        return Pattern.matches(CARD_ID, idCard);
-    }
 
     /**
      * 验证字符串是否是中文
      *
-     * @param chinaText
+     * @param chineseText
      * @return
      */
-    public static boolean isChineseText(String chinaText){
-        if(StringUtils.isBlank(chinaText)){
+    public static boolean isChineseText(String chineseText){
+        if(StringUtils.isBlank(chineseText)){
             return false;
         }
-        return Pattern.matches(CHINA_TEXT,chinaText);
+        return Pattern.matches(CHINA_TEXT, chineseText);
+    }
+
+
+    /**
+     * 验证是否为中国人姓名 包括少数民族,exp: 噶及·洛克业  外国人翻译为中文: 洛克·哈德森
+     *
+     * @param chineseName
+     * @return
+     */
+    public static boolean isChineseName(String chineseName){
+        if(StringUtils.isBlank(chineseName)){
+            return false;
+        }
+        return Pattern.matches(CHINA_NAME, chineseName);
     }
 
 
@@ -124,6 +131,50 @@ public class ValidateUtils {
         }
         UrlValidator urlValidator = new UrlValidator(schemas);
         return urlValidator.isValid(url);
+    }
+
+
+    /**
+     * 验证 URL 不合法
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isNotUrl(String url) {
+        return !isUrl(url);
+    }
+
+
+
+    /**
+     * 验证字符串是否为标准 JSON 字符串
+     * TODO 是否有更好的方案?
+     *
+     * @param jsonStr
+     * @return
+     */
+    public static boolean isJSON(String jsonStr){
+        if(StringUtils.isBlank(jsonStr)
+            || ! StringUtils.startsWith(jsonStr, "{")
+            || ! StringUtils.endsWith(jsonStr, "}")){
+            return false;
+        }
+        try{
+            JSON.parseObject(jsonStr);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 验证字符串是否为标准 JSON 字符串
+     *
+     * @param jsonStr
+     * @return
+     */
+    public static boolean isNotJSON(String jsonStr){
+        return !isJSON(jsonStr);
     }
 
 }

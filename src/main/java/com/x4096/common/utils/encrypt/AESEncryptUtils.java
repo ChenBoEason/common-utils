@@ -13,11 +13,14 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * @author: 0x4096.peng@gmail.com
  * @date: 2018/12/18
- * @instructions: AES加密,对称加密
+ * @instructions: AES加密, 对称加密
  */
 public class AESEncryptUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AESEncryptUtils.class);
+
+    private AESEncryptUtils() {
+    }
 
     /**
      * 加密 KEY 必须为 16 位
@@ -48,16 +51,16 @@ public class AESEncryptUtils {
     /**
      * 加密
      *
-     * @param content       待加密内容
-     * @param encryptKey    加密 KEY
+     * @param content    待加密内容
+     * @param encryptKey 加密 KEY
      * @return
      */
     public static String encrypt(String content, String encryptKey) {
-        if(content == null || encryptKey == null){
+        if (content == null || encryptKey == null) {
             throw new IllegalArgumentException("加密内容 content 和 encryptKey 不能为 null");
         }
 
-        if(StringUtils.length(encryptKey) != KEY_LENGTH){
+        if (StringUtils.length(encryptKey) != KEY_LENGTH) {
             throw new IllegalArgumentException("加密的encryptKey必须为16位");
         }
 
@@ -75,7 +78,7 @@ public class AESEncryptUtils {
     /**
      * 加密,使用默认KEY
      *
-     * @param content      待加密内容
+     * @param content 待加密内容
      * @return
      */
     public static String encrypt(String content) {
@@ -85,8 +88,8 @@ public class AESEncryptUtils {
     /**
      * 解密
      *
-     * @param content       待解密内容
-     * @param decryptKey    解密的 KEY
+     * @param content    待解密内容
+     * @param decryptKey 解密的 KEY
      * @return
      */
     public static String decrypt(String content, String decryptKey) {
@@ -94,18 +97,18 @@ public class AESEncryptUtils {
             throw new IllegalArgumentException("解密内容或解密key不能为null");
         }
 
-        if(StringUtils.length(decryptKey) != KEY_LENGTH){
+        if (StringUtils.length(decryptKey) != KEY_LENGTH) {
             throw new IllegalArgumentException("解密的decryptKey必须为16位");
         }
 
-        try{
+        try {
             Cipher cipher = Cipher.getInstance(PADDING);
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(decryptKey.getBytes(DEFAULT_ENCODING), KEY_ALGORITHM));
             byte[] bytes = new BASE64Decoder().decodeBuffer(content);
             bytes = cipher.doFinal(bytes);
             return new String(bytes, DEFAULT_ENCODING);
-        }catch (Exception e){
-            LOGGER.error("解密异常, 解密前内容: {}, 解密key: {}",content, decryptKey, e);
+        } catch (Exception e) {
+            LOGGER.error("解密异常, 解密前内容: {}, 解密key: {}", content, decryptKey, e);
         }
         return null;
     }
@@ -113,7 +116,7 @@ public class AESEncryptUtils {
     /**
      * 解密,使用默认KEY
      *
-     * @param content       待解密内容
+     * @param content 待解密内容
      * @return
      */
     public static String decrypt(String content) {

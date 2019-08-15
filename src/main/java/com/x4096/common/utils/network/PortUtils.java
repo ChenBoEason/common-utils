@@ -24,20 +24,7 @@ public class PortUtils {
      * @return
      */
     public static boolean isConnect(String host, int port){
-        Socket connect = new Socket();
-        try {
-            connect.connect(new InetSocketAddress(host, port),2_000);
-            return connect.isConnected();
-        } catch (IOException e) {
-            LOGGER.error("Socket 连接异常", e);
-        } finally {
-            try {
-                connect.close();
-            } catch (IOException e) {
-                LOGGER.error("Socket 关闭异常", e);
-            }
-        }
-        return false;
+        return isConnect(host, port, 2_000);
     }
 
     /**

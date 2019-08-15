@@ -1,6 +1,9 @@
 package com.x4096.common.utils.encrypt;
 
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sun.misc.BASE64Decoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -12,9 +15,14 @@ import java.security.SecureRandom;
 /**
  * @author: 0x4096.peng@gmail.com
  * @date: 2019/1/10
- * @instructions: Des加密工具类,对称加密
+ * @instructions: Des加密工具类, 对称加密
  */
 public class DESEncryptUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DESEncryptUtils.class);
+
+    private DESEncryptUtils() {
+    }
 
     /**
      * 加密算法DES
@@ -43,105 +51,55 @@ public class DESEncryptUtils {
     private static final int KEY_LENGTH = 16;
 
 
-    /**
-     * 加密
-     *
-     * @param content
-     * @return
-     */
-    public static String encrypt(String content) {
-        return encrypt(content, KEY);
-    }
+    public static String encrypt(String content, String encryptKey) {
+        if (content == null || encryptKey == null) {
+            throw new NullPointerException("加密内容或加密key不能为null");
+        }
 
-
-    /**
-     * 加密
-     *
-     * @param content 待加密内容
-     * @param encryptKey 加密的密钥
-     * @return
-     */
-    public static String encrypt(String content,String encryptKey) {
-//        if (content == null || encryptKey == null) {
-//            throw new IllegalArgumentException("加密内容或加密key不能为null");
-//        }
-//        if( encryptKey.length() != 16 ){
-//            throw new IllegalArgumentException("加密的encryptKey必须为16位");
-//        }
-
+        SecureRandom secureRandom = new SecureRandom();
         try {
-            return Base64.encodeBase64String(encrypt(content.getBytes(DEFAULT_ENCODING), encryptKey.getBytes(DEFAULT_ENCODING)));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-
-    /**
-     * 加密
-     * @param content
-     * @param encryptKey
-     * @return
-     */
-    public static byte[] encrypt(byte[] content, byte[] encryptKey) {
-        if(content == null || encryptKey == null){
-            throw new NullPointerException("content或encryptKey不能为null");
-        }
-        SecureRandom sr = new SecureRandom();
-        try{
-            DESKeySpec dks = new DESKeySpec(encryptKey);
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DES);
-            SecretKey securekey = keyFactory.generateSecret(dks);
+            DESKeySpec desKeySpec = new DESKeySpec(encryptKey.getBytes(DEFAULT_ENCODING));
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(DES);
+            SecretKey securekey = secretKeyFactory.generateSecret(desKeySpec);
             Cipher cipher = Cipher.getInstance(PADDING);
-            cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);
-            return cipher.doFinal(content);
-        }catch (Exception e){
-            e.printStackTrace();
+            cipher.init(Cipher.ENCRYPT_MODE, securekey, secureRandom);
+            return Base64.encodeBase64String(cipher.doFinal(content.getBytes(DEFAULT_ENCODING)));
+        } catch (Exception e) {
+            LOGGER.error("加密异常, 加密前内容: {}, 加密key: {}", content, encryptKey, e);
         }
         return null;
     }
 
 
-    /**
-     * 加密
-     * @param content
-     * @return
-     */
-    // public final static String decrypt(String content ) {
-    //     return decrypt(content,KEY);
-    // }
+    public static String decrypt(String content, String decryptKey) {
+        if (content == null || decryptKey == null) {
+            throw new NullPointerException("解密内容或解密key不能为null");
+        }
 
-
-    /**
-     * 解密
-     * @param content
-     * @param decryptKey
-     * @return
-     */
-    // public final static String decrypt(String content, String decryptKey ) {
-    //     if (content == null || decryptKey == null) {
-    //         throw new IllegalArgumentException("解密内容或解密key不能为null");
-    //     }
-    //     if( decryptKey.length() != KEY_LENGTH ){
-    //         throw new IllegalArgumentException("解密的encryptKey必须为16位");
-    //     }
-    //
-    //     try {
-    //         return new String(decrypt(Base64.decodeBase64(content),decryptKey.getBytes(DEFAULT_ENCODING)), DEFAULT_ENCODING);
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //     }
-    //     return null;
-    // }
+        SecureRandom secureRandom = new SecureRandom();
+        try {
+            byte[] bytes = decryptKey.getBytes(DEFAULT_ENCODING);
+            DESKeySpec desKeySpec = new DESKeySpec(bytes);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DES);
+            SecretKey securekey = keyFactory.generateSecret(desKeySpec);
+            Cipher cipher = Cipher.getInstance(PADDING);
+            cipher.init(Cipher.DECRYPT_MODE, securekey, secureRandom);
+            byte[] decodeBuffer = new BASE64Decoder().decodeBuffer(content);
+            decodeBuffer = cipher.doFinal(decodeBuffer);
+            return new String(decodeBuffer, DEFAULT_ENCODING);
+        } catch (Exception e) {
+            LOGGER.error("解密异常, 解密前内容: {}, 解密key: {}", content, decryptKey, e);
+        }
+        return null;
+    }
 
 
     public static void main(String[] args) {
 
-        String ss = encrypt("666","1234567899874447774654");
-        System.out.println(ss);
-//        System.out.println(decrypt(ss));
+        String encrypt = encrypt("hhhh", KEY);
+
+        System.out.println(encrypt);
+
 
     }
 

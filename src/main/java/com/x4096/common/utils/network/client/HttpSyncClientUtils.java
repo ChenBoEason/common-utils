@@ -1,6 +1,6 @@
 package com.x4096.common.utils.network.client;
 
-import com.x4096.common.utils.charset.Charset;
+import com.x4096.common.utils.charset.CharsetConstants;
 import com.x4096.common.utils.common.ValidateUtils;
 import com.x4096.common.utils.network.client.config.HttpSyncConfig;
 import org.apache.commons.collections4.MapUtils;
@@ -51,7 +51,7 @@ public class HttpSyncClientUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpSyncClientUtils.class);
 
-    private static final String DEFAULT_CHARSET = Charset.UTF_8;
+    private static final String DEFAULT_CHARSET = CharsetConstants.UTF_8;
 
     private static PoolingHttpClientConnectionManager poolConnManager;
 
@@ -161,7 +161,7 @@ public class HttpSyncClientUtils {
 
         StringEntity stringEntity = new StringEntity(jsonString, DEFAULT_CHARSET);
         stringEntity.setContentEncoding(DEFAULT_CHARSET);
-        stringEntity.setContentType("application/json");
+        stringEntity.setContentType("application/json;charset=UTF-8");
 
         httpPost.setEntity(stringEntity);
 

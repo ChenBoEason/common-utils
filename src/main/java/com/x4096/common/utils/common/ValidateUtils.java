@@ -177,4 +177,10 @@ public class ValidateUtils {
         return !isJSON(jsonStr);
     }
 
+    public static void main(String[] args) {
+
+        System.out.println(isChineseText("朱鹏"));
+
+    }
+
 }

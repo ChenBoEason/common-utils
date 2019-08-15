@@ -15,12 +15,12 @@ import java.util.UUID;
 public abstract class Captcha extends Randoms {
 
 
-    private static String[] chars = new String[] { "a", "b", "c", "d", "e", "f",
+    private static String[] chars = new String[]{"a", "b", "c", "d", "e", "f",
             "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
             "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5",
             "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I",
             "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
-            "W", "X", "Y", "Z" };
+            "W", "X", "Y", "Z"};
 
     /**
      * 字体
@@ -38,7 +38,7 @@ public abstract class Captcha extends Randoms {
     protected int width = 150;
 
     /**
-     *  验证码显示高度
+     * 验证码显示高度
      */
     protected int height = 40;
 
@@ -53,7 +53,7 @@ public abstract class Captcha extends Randoms {
      * @return 字符数组
      */
     protected char[] alphas() {
-        if(captchaLength > 8){
+        if (captchaLength > 8) {
             throw new IllegalArgumentException("验证码字符个数限制少于 8");
         }
         StringBuilder stringBuilder = new StringBuilder();

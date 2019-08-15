@@ -15,7 +15,7 @@ public class EncryptUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EncryptUtils.class);
 
-
+    private EncryptUtils(){}
 
     public static String MD2(String content){
         if(content == null){
@@ -65,7 +65,10 @@ public class EncryptUtils {
         return DigestUtils.sha512Hex(content);
     }
 
+
     public static void main(String[] args) {
-        System.out.println(MD2(""));
+        System.out.println(MD5("123" + "BusyPHP"));
+
     }
+
 }

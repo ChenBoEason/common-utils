@@ -27,12 +27,7 @@ public class DateUtils {
      * 使用ThreadLocal定义一个全局的SimpleDateFormat
      * 因为 SimpleDateFormat 不是线程安全
      */
-    private static ThreadLocal<SimpleDateFormat> SIMPLE_DATE_FORMAT_THREAD_POOL = new ThreadLocal<SimpleDateFormat>() {
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat(DATE_FORMAT);
-        }
-    };
+    private static ThreadLocal<SimpleDateFormat> SIMPLE_DATE_FORMAT_THREAD_POOL = ThreadLocal.withInitial(() -> new SimpleDateFormat(DATE_FORMAT));
 
 
     private static String[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };

@@ -16,18 +16,20 @@ public class Base64EncryptUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Base64EncryptUtils.class);
 
-    private static final String DEFAULT_CHARSET = "UTF-8";
+    private Base64EncryptUtils() {
+    }
 
+    private static final String DEFAULT_CHARSET = "UTF-8";
 
 
     /**
      * base64 加密
      *
-     * @param content       待加密内容
-     * @return              加密后内容
+     * @param content 待加密内容
+     * @return 加密后内容
      */
-    public static String encrypt(String content){
-        if(content == null){
+    public static String encrypt(String content) {
+        if (content == null) {
             throw new NullPointerException("加密内容不能为null");
         }
         Base64 base64 = new Base64();
@@ -41,15 +43,14 @@ public class Base64EncryptUtils {
     }
 
 
-
     /**
      * base64 解密
      *
-     * @param content       待解密内容
-     * @return              解密后内容
+     * @param content 待解密内容
+     * @return 解密后内容
      */
     public static String decrypt(String content) {
-        if(content == null){
+        if (content == null) {
             throw new NullPointerException("解密内容不能为null");
         }
         Base64 base64 = new Base64();

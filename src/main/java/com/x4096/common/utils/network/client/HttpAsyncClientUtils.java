@@ -1,11 +1,10 @@
 package com.x4096.common.utils.network.client;
 
-import com.x4096.common.utils.charset.Charset;
+import com.x4096.common.utils.charset.CharsetConstants;
 import com.x4096.common.utils.common.ValidateUtils;
 import com.x4096.common.utils.network.client.config.HttpAsyncConfig;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.CharSet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpHost;
@@ -29,7 +28,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.*;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
@@ -42,7 +40,6 @@ import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.nio.reactor.ConnectingIOReactor;
 import org.apache.http.nio.reactor.IOReactorException;
 import org.apache.http.ssl.SSLContexts;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +67,7 @@ public class HttpAsyncClientUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpAsyncClientUtils.class);
 
 
-    private static final String DEFAULT_CHARSET = Charset.UTF_8;
+    private static final String DEFAULT_CHARSET = CharsetConstants.UTF_8;
 
 
     private static PoolingNHttpClientConnectionManager poolingNHttpClientConnectionManager;

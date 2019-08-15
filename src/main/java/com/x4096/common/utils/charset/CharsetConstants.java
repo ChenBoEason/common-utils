@@ -6,9 +6,11 @@ package com.x4096.common.utils.charset;
  * @DateTime: 2019/5/21 22:58
  * @Description: 常用编码集
  */
-public class Charset {
+public class CharsetConstants {
 
-    /** Chinese start */
+    /**
+     * Chinese start
+     */
     public static final String ISO_2022_CN = "ISO-2022-CN";
 
     public static final String BIG5 = "BIG5";
@@ -21,7 +23,9 @@ public class Charset {
     /** Chinese end */
 
 
-    /** Cyrillic start */
+    /**
+     * Cyrillic start
+     */
     public static final String ISO_8859_5 = "ISO-8859-5";
 
     public static final String KOI8_R = "KOI8-R";
@@ -36,22 +40,27 @@ public class Charset {
     /** Cyrillic end */
 
 
-
-    /** Greek start */
+    /**
+     * Greek start
+     */
     public static final String ISO_8859_7 = "ISO-8859-7";
 
     public static final String WINDOWS_1253 = "WINDOWS-1253";
     /** Greek end */
 
 
-    /** Hebrew start */
+    /**
+     * Hebrew start
+     */
     public static final String ISO_8859_8 = "ISO-8859-8";
 
     public static final String WINDOWS_1255 = "WINDOWS-1255";
     /** Hebrew end */
 
 
-    /** Japanese start */
+    /**
+     * Japanese start
+     */
     public static final String ISO_2022_JP = "ISO-2022-JP";
 
     public static final String EUC_JP = "EUC-JP";
@@ -60,14 +69,18 @@ public class Charset {
     /** Japanese end */
 
 
-    /** Korean start */
+    /**
+     * Korean start
+     */
     public static final String ISO_2022_KR = "ISO-2022-KR";
 
     public static final String EUC_KR = "EUC-KR";
     /** Korean end */
 
 
-    /** Unicode start */
+    /**
+     * Unicode start
+     */
     public static final String UTF_8 = "UTF-8";
 
     public static final String UTF_16BE = "UTF-16BE";
@@ -80,6 +93,5 @@ public class Charset {
 
     public static final String X_ISO_10646_UCS_4_34121 = "X-ISO-10646-UCS-4-34121";
     /** Unicode end */
-
 
 }

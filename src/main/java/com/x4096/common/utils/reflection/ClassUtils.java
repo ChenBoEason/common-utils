@@ -27,7 +27,7 @@ public class ClassUtils {
     /**
      * 系统启动,WEB-INF/classes路径=
      */
-    public static String PATH = "";
+    private static String PATH = "";
 
 
     /**
@@ -184,13 +184,24 @@ public class ClassUtils {
         }
     }
 
+
+
+    /**
+     * 根据包名获取包下所有的类名
+     * @param basePackpageName
+     * @return
+     */
+    public static List<String> getClassNames(String basePackpageName) {
+        return getClassNames(new ArrayList<>(), basePackpageName);
+    }
+
     /**
      * 递归算法，获取，某个基包下的所有类
      *
      * @param basePackpageName
      * @return
      */
-    public static List<String> getClassNames(List<String> classList,String basePackpageName) {
+    private static List<String> getClassNames(List<String> classList,String basePackpageName) {
         String[] classStrs = getPackageAllClassName(ClassUtils.PATH, basePackpageName);
         for (String pg : classStrs) {
             if (!pg.substring(0, 1).equals(pg.substring(0, 1).toUpperCase())) {
@@ -202,53 +213,6 @@ public class ClassUtils {
             }
         }
         return classList;
-    }
-
-    /**
-     * 根据包名获取包下所有的类名
-     * @param basePackpageName
-     * @return
-     */
-    public static List<String> getClassNames(String basePackpageName) {
-        return getClassNames(new ArrayList<String>(), basePackpageName);
-    }
-
-    /**
-     * 获取实体类对应的表名
-     *
-     * @param cls
-     * @return
-     */
-    public static String getTable(Class cls) {
-        if (cls != null) {
-            for (Annotation a : cls.getAnnotations()) {
-                if (a != null) {
-                    if (a.annotationType().getSimpleName().equals("Table")) {
-                        return a.toString().substring(
-                                a.toString().indexOf("name=") + 5,
-                                a.toString().length() - 1);
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 获取实体类对应的表名
-     *
-     * @param s
-     * @return
-     */
-    public static String getTable(String s) {
-        Class cls = null;
-        try {
-            cls = Class.forName(s);
-            return getTable(cls);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
 }

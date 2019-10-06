@@ -1,8 +1,9 @@
-package com.x4096.common.utils.network.client;
+package com.x4096.common.utils.network.http;
 
-import com.x4096.common.utils.charset.CharsetConstants;
-import com.x4096.common.utils.common.ValidateUtils;
-import com.x4096.common.utils.network.client.config.HttpSyncConfig;
+import com.x4096.common.utils.constant.CharsetConstants;
+import com.x4096.common.utils.network.http.config.HttpSyncConfig;
+import com.x4096.common.utils.network.http.enums.HttpContentTypeEnum;
+import com.x4096.common.utils.text.ValidateUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -30,6 +31,7 @@ import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -41,13 +43,16 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
- *
  * 同步的HTTP请求对象，支持post与get方法以及可设置代理
+ *
  * @author: 0x4096.peng@gmail.com
  * @date: 2018/12/18
  * @instructions: 参考代码地址: https://github.com/wsdl-king/AsyncHttpClientPool/blob/master/src/main/java/com/server/java/util/http/client/HttpSyncClient.java
  */
 public class HttpSyncClientUtils {
+
+    private HttpSyncClientUtils() {
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpSyncClientUtils.class);
 
@@ -58,7 +63,11 @@ public class HttpSyncClientUtils {
     private static CloseableHttpClient closeableHttpClient;
 
 
-    private HttpSyncClientUtils() {
+    /**
+     * 初始化 httpClient 默认配置
+     */
+    public static void init() {
+        init(new HttpSyncConfig());
     }
 
     /**
@@ -69,18 +78,18 @@ public class HttpSyncClientUtils {
     public static void init(HttpSyncConfig httpSyncConfig) {
         SSLContext sslcontext = null;
         try {
-            sslcontext = SSLContexts.custom().loadTrustMaterial(null,
-                    new TrustSelfSignedStrategy())
+            sslcontext = SSLContexts.custom()
+                    .loadTrustMaterial(null, new TrustSelfSignedStrategy())
                     .build();
         } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
             LOGGER.error("HttpSyncClientUtils 初始化异常", e);
         }
 
-        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, NoopHostnameVerifier.INSTANCE);
+        SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext, NoopHostnameVerifier.INSTANCE);
 
         Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                .register("https", sslsf)
+                .register("https", sslConnectionSocketFactory)
                 .build();
 
         poolConnManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
@@ -101,7 +110,7 @@ public class HttpSyncClientUtils {
                 .setConnectionManagerShared(true).build();
 
         if (poolConnManager != null && poolConnManager.getTotalStats() != null) {
-            LOGGER.info("now client pool " + poolConnManager.getTotalStats().toString());
+            LOGGER.info("now http pool " + poolConnManager.getTotalStats().toString());
         }
         closeableHttpClient = httpClient;
     }
@@ -109,9 +118,8 @@ public class HttpSyncClientUtils {
 
     /**
      * 关闭资源
-     *
      */
-    public static void close(){
+    public static void close() {
         poolConnManager.close();
         try {
             closeableHttpClient.close();
@@ -121,36 +129,50 @@ public class HttpSyncClientUtils {
     }
 
 
-
-
     /**
      * 同步POST请求 向指定的url发送一次post请求,参数是json格式字符串
      *
-     * @param requestUrl    请求地址
-     * @param jsonString    请求参数,格式是json
-     * @return              返回结果, 请求失败时返回null
-     * @apiNote             基于SpringMVC或SpringBoot项目 Controller层使用 @RequestBody 接收参数
+     * @param requestUrl 请求地址
+     * @param jsonString 请求参数,格式是json
+     * @return 返回结果, 请求失败时返回null
+     * @apiNote 基于SpringMVC或SpringBoot项目 Controller层使用 @RequestBody 接收参数
      */
     public static String post(String requestUrl, String jsonString) {
-        return post(requestUrl, jsonString, null);
+        return post(requestUrl, jsonString, null, HttpContentTypeEnum.APPLICATION_JSON);
     }
 
-    /**
-     * 同步POST请求 向指定的url发送一次post请求,参数是json格式字符串
-     *
-     * @param requestUrl    请求地址
-     * @param jsonString    请求参数,格式是json
-     * @param requestHeader 请求头
-     * @return              返回结果, 请求失败时返回null
-     * @apiNote             基于SpringMVC或SpringBoot项目 Controller层使用 @RequestBody 接收参数
-     */
-    public static String post(String requestUrl, String jsonString, Map<String, String> requestHeader) {
 
-        if(StringUtils.isBlank(requestUrl) || StringUtils.isBlank(jsonString)){
+    /**
+     * 同步POST请求 向指定的url发送一次post请求
+     *
+     * @param requestUrl          请求地址
+     * @param requestContent      请求参数,格式是json
+     * @param requestHeader       请求头
+     * @param httpContentTypeEnum contentTypeEnum
+     * @return 返回结果, 请求失败时返回null
+     * @apiNote
+     */
+    public static String post(String requestUrl, String requestContent, Map<String, String> requestHeader, HttpContentTypeEnum httpContentTypeEnum) {
+        return post(requestUrl, requestContent, requestHeader, httpContentTypeEnum.getType());
+    }
+
+
+    /**
+     * 同步POST请求 向指定的url发送一次post请求
+     *
+     * @param requestUrl      请求地址
+     * @param requestContent  请求参数,格式是json
+     * @param requestHeader   请求头
+     * @param httpContentType contentType
+     * @return 返回结果, 请求失败时返回null
+     * @apiNote
+     */
+    public static String post(String requestUrl, String requestContent, Map<String, String> requestHeader, String httpContentType) {
+        if (StringUtils.isBlank(requestUrl) || StringUtils.isBlank(requestContent)) {
             throw new NullPointerException("requestUrl或jsonString不能为空");
         }
 
-        if(ValidateUtils.isNotUrl(requestUrl)){
+        if (ValidateUtils.isNotUrl(requestUrl)) {
             throw new IllegalArgumentException("请求 URL 格式错误");
         }
 
@@ -159,22 +181,20 @@ public class HttpSyncClientUtils {
         /* 构建请求头 */
         buildRequestHeader(httpPost, requestHeader);
 
-        StringEntity stringEntity = new StringEntity(jsonString, DEFAULT_CHARSET);
+        StringEntity stringEntity = new StringEntity(requestContent, DEFAULT_CHARSET);
         stringEntity.setContentEncoding(DEFAULT_CHARSET);
-        stringEntity.setContentType("application/json;charset=UTF-8");
+        stringEntity.setContentType(httpContentType);
 
         httpPost.setEntity(stringEntity);
-
         return result(httpPost);
     }
-
 
 
     /**
      * 同步post请求
      *
-     * @param requestUrl  请求地址
-     * @param paramsMap   请求参数,格式是Map<String,String> params
+     * @param requestUrl 请求地址
+     * @param paramsMap  请求参数,格式是Map<String, String> params
      * @return
      */
     public static String post(String requestUrl, Map<String, String> paramsMap) {
@@ -185,60 +205,86 @@ public class HttpSyncClientUtils {
     /**
      * 同步post请求
      *
-     * @param requestUrl     请求地址
-     * @param paramsMap      请求参数,格式是Map<String,String> params
-     * @param requestHeader  请求头
-     * @return                 
+     * @param requestUrl    请求地址
+     * @param paramsMap     请求参数,格式是Map<String,String> params
+     * @param requestHeader 请求头
+     * @return
      * @apiNote
      */
     public static String post(String requestUrl, Map<String, String> paramsMap, Map<String, String> requestHeader) {
+        return post(requestUrl, paramsMap, requestHeader, HttpContentTypeEnum.APPLICATION_JSON);
+    }
 
-        if(StringUtils.isBlank(requestUrl)){
+
+    /**
+     * 同步post请求
+     *
+     * @param requestUrl          请求地址
+     * @param paramsMap           请求参数,格式是Map<String,String> params
+     * @param requestHeader       请求头
+     * @param httpContentTypeEnum contentTypeEnum
+     * @return
+     * @apiNote
+     */
+    public static String post(String requestUrl, Map<String, String> paramsMap, Map<String, String> requestHeader, HttpContentTypeEnum httpContentTypeEnum) {
+        return post(requestUrl, paramsMap, requestHeader, httpContentTypeEnum.getType());
+    }
+
+
+    /**
+     * 同步post请求
+     *
+     * @param requestUrl      请求地址
+     * @param paramsMap       请求参数,格式是Map<String,String> params
+     * @param requestHeader   请求头
+     * @param httpContentType contentType
+     * @return
+     * @apiNote
+     */
+    public static String post(String requestUrl, Map<String, String> paramsMap, Map<String, String> requestHeader, String httpContentType) {
+        if (StringUtils.isBlank(requestUrl)) {
             throw new NullPointerException("requestUrl不能为空");
         }
 
-        if(ValidateUtils.isNotUrl(requestUrl)){
+        if (ValidateUtils.isNotUrl(requestUrl)) {
             throw new IllegalArgumentException("请求 URL 格式错误");
         }
 
-        if(paramsMap == null){
+        if (paramsMap == null) {
             throw new NullPointerException("paramsMap不能为null");
         }
 
-        List<BasicNameValuePair> list = new ArrayList<>();
-
-        paramsMap.forEach((k, v)->{
+        List<BasicNameValuePair> list = new ArrayList<>(paramsMap.size());
+        paramsMap.forEach((k, v) -> {
             BasicNameValuePair basicNameValuePair = new BasicNameValuePair(k, v);
             list.add(basicNameValuePair);
         });
-
-        return post(requestUrl, list, requestHeader);
+        return post(requestUrl, list, requestHeader, httpContentType);
     }
 
 
     /**
      * 同步GET请求 向指定的url发送一次get请求
      *
-     * @param requestUrl   请求地址
-     * @return             返回结果, 请求失败时返回null
+     * @param requestUrl 请求地址
+     * @return 返回结果, 请求失败时返回null
      */
     public static String get(String requestUrl) {
-        return get(requestUrl, new ArrayList<BasicNameValuePair>());
+        return get(requestUrl, new ArrayList<>());
     }
 
 
     /**
      * 同步GET请求 向指定的url发送一次get请求,参数是字符串
      *
-     * @param requestUrl    请求地址
-     * @param urlParams     请求参数,格式 key1=value1&key2=value2
-     * @return              返回结果, 请求失败时返回null
-     * @apiNote             基于SpringMVC或SpringBoot项目 Controller层使用 @RequestParam 接收参数
+     * @param requestUrl 请求地址
+     * @param urlParams  请求参数,格式 key1=value1&key2=value2
+     * @return 返回结果, 请求失败时返回null
+     * @apiNote 基于SpringMVC或SpringBoot项目 Controller层使用 @RequestParam 接收参数
      */
     public static String get(String requestUrl, String urlParams) {
         return get(requestUrl, urlParams, null);
     }
-
 
 
     /**
@@ -247,12 +293,11 @@ public class HttpSyncClientUtils {
      * @param requestUrl    请求地址
      * @param urlParams     请求参数,格式 key1=value1&key2=value2
      * @param requestHeader 请求头
-     * @return              返回结果, 请求失败时返回null
-     * @apiNote             基于SpringMVC或SpringBoot项目 Controller层使用 @RequestParam 接收参数
+     * @return 返回结果, 请求失败时返回null
+     * @apiNote 基于SpringMVC或SpringBoot项目 Controller层使用 @RequestParam 接收参数
      */
     public static String get(String requestUrl, String urlParams, Map<String, String> requestHeader) {
-
-        if(StringUtils.isBlank(requestUrl)){
+        if (StringUtils.isBlank(requestUrl)) {
             throw new NullPointerException("requestUrl不能为空");
         }
 
@@ -278,10 +323,6 @@ public class HttpSyncClientUtils {
     }
 
 
-
-
-
-
     private static CloseableHttpClient getCloseableHttpClient() {
         return closeableHttpClient;
     }
@@ -293,23 +334,23 @@ public class HttpSyncClientUtils {
      * @param requestUrl    请求地址
      * @param paramsList    请求参数,格式是List<NameValuePair>
      * @param requestHeader 请求头信息
-     * @return              返回结果, 请求失败时返回null
-     * @apiNote             基于SpringMVC或SpringBoot项目 Controller层使用 @RequestParam 接收参数
+     * @return 返回结果, 请求失败时返回null
+     * @apiNote 基于SpringMVC或SpringBoot项目 Controller层使用 @RequestParam 接收参数
      */
-    private static String post(String requestUrl, List<BasicNameValuePair> paramsList, Map<String, String> requestHeader) {
-
-        if(StringUtils.isBlank(requestUrl)){
+    private static String post(String requestUrl, List<BasicNameValuePair> paramsList, Map<String, String> requestHeader, String httpContentType) {
+        if (StringUtils.isBlank(requestUrl)) {
             throw new NullPointerException("baseUrl不能为空");
         }
-        if(paramsList == null){
+        if (paramsList == null) {
             throw new NullPointerException("请求参数不能为null");
         }
 
         HttpPost httpPost = new HttpPost(requestUrl);
-
         /* 构建请求参数 */
         try {
             UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(paramsList, DEFAULT_CHARSET);
+            urlEncodedFormEntity.setContentEncoding(DEFAULT_CHARSET);
+            urlEncodedFormEntity.setContentType(httpContentType);
             httpPost.setEntity(urlEncodedFormEntity);
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("POST 请求异常", e);
@@ -317,25 +358,23 @@ public class HttpSyncClientUtils {
 
         /* 构建请求头 */
         buildRequestHeader(httpPost, requestHeader);
-
         return result(httpPost);
     }
 
     /**
      * 同步GET请求 向指定的url发送一次get请求,参数是List<NameValuePair>
      *
-     * @param requestUrl        请求地址
-     * @param paramsList        请求参数,格式是List<NameValuePair>
-     * @return                  返回结果, 请求失败时返回null
-     * @apiNote                 基于SpringMVC或SpringBoot项目 Controller层使用 @RequestParam接收参数
+     * @param requestUrl 请求地址
+     * @param paramsList 请求参数,格式是List<NameValuePair>
+     * @return 返回结果, 请求失败时返回null
+     * @apiNote 基于SpringMVC或SpringBoot项目 Controller层使用 @RequestParam接收参数
      */
     private static String get(String requestUrl, List<BasicNameValuePair> paramsList, Map<String, String> requestHeader) {
-
-        if(StringUtils.isBlank(requestUrl)){
+        if (StringUtils.isBlank(requestUrl)) {
             throw new NullPointerException("baseUrl不能为空");
         }
 
-        if(ValidateUtils.isNotUrl(requestUrl)){
+        if (ValidateUtils.isNotUrl(requestUrl)) {
             throw new IllegalArgumentException("请求 URL 格式错误");
         }
 
@@ -371,10 +410,10 @@ public class HttpSyncClientUtils {
     /**
      * 同步GET请求 向指定的url发送一次get请求,参数是List<NameValuePair>
      *
-     * @param requestUrl    请求地址
-     * @param paramsList    请求参数,格式是List<NameValuePair>
-     * @return              返回结果, 请求失败时返回null
-     * @apiNote             基于SpringMVC或SpringBoot项目 Controller层使用 @RequestParam接收参数
+     * @param requestUrl 请求地址
+     * @param paramsList 请求参数,格式是List<NameValuePair>
+     * @return 返回结果, 请求失败时返回null
+     * @apiNote 基于SpringMVC或SpringBoot项目 Controller层使用 @RequestParam接收参数
      */
     private static String get(String requestUrl, List<BasicNameValuePair> paramsList) {
         return get(requestUrl, paramsList, null);
@@ -386,12 +425,12 @@ public class HttpSyncClientUtils {
      * @param httpUriRequest
      * @return
      */
-    private static String result(HttpUriRequest httpUriRequest){
+    private static String result(HttpUriRequest httpUriRequest) {
         CloseableHttpClient httpClient = getCloseableHttpClient();
         CloseableHttpResponse response = null;
         String result = null;
 
-        try{
+        try {
             response = httpClient.execute(httpUriRequest);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
@@ -399,9 +438,9 @@ public class HttpSyncClientUtils {
             }
             /* 关闭流操作 */
             EntityUtils.consume(entity);
-        }catch (IOException e){
+        } catch (IOException e) {
             LOGGER.error(httpUriRequest.getMethod() + " 请求异常: ", e);
-        }finally {
+        } finally {
             if (response != null) {
                 try {
                     response.close();
@@ -424,28 +463,29 @@ public class HttpSyncClientUtils {
      * @param httpMessage
      * @return
      */
-    private static void buildRequestHeader(HttpMessage httpMessage, Map<String, String> requestHeader){
-        if(MapUtils.isNotEmpty(requestHeader)){
-            requestHeader.forEach((k,v)->{
-                httpMessage.addHeader(k, v);
-            });
+    private static void buildRequestHeader(HttpMessage httpMessage, Map<String, String> requestHeader) {
+        if (MapUtils.isNotEmpty(requestHeader)) {
+            requestHeader.forEach(httpMessage::addHeader);
         }
     }
 
 
-
-
     public static void main(String[] args) {
-
         init(new HttpSyncConfig());
 
+        String content = "{\"name\": \"hhh\", \"age\": 18}";
 
-        String result = get("https://0x4096.com/");
+        content = "name=womeng&age=18";
 
-        System.out.println(result);
+        String res = post("http://127.0.0.1:9099/test3", content);
 
-        String result2 = get("https://0x4096.com/");
-
-        System.out.println(result2);
+        System.err.println(res);
+        // String result = get("https://0x4096.com:5050");
+        //
+        // System.out.println(result);
+        //
+        // String result2 = get("https://0x4096.com/");
+        //
+        // System.out.println(result2);
     }
 }

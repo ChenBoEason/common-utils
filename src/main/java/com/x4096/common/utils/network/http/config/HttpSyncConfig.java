@@ -1,4 +1,4 @@
-package com.x4096.common.utils.network.client.config;
+package com.x4096.common.utils.network.http.config;
 
 /**
  * @Author: 0x4096.peng@gmail.com

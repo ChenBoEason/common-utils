@@ -1,4 +1,4 @@
-package com.x4096.common.utils.charset;
+package com.x4096.common.utils.constant;
 
 /**
  * @Author: 0x4096.peng@gmail.com

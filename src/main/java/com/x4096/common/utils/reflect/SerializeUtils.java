@@ -1,4 +1,4 @@
-package com.x4096.common.utils.reflection;
+package com.x4096.common.utils.reflect;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

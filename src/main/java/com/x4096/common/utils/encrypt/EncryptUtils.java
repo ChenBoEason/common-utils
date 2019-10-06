@@ -13,12 +13,12 @@ import org.slf4j.LoggerFactory;
  */
 public class EncryptUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EncryptUtils.class);
+    private EncryptUtils() {
+    }
 
-    private EncryptUtils(){}
 
-    public static String MD2(String content){
-        if(content == null){
+    public static String MD2(String content) {
+        if (content == null) {
             throw new NullPointerException("待加密内容不能为 null");
         }
         return DigestUtils.md2Hex(content);
@@ -26,49 +26,42 @@ public class EncryptUtils {
 
 
     public static String MD5(String content) {
-        if(content == null){
+        if (content == null) {
             throw new NullPointerException("待加密内容不能为 null");
         }
         return DigestUtils.md5Hex(content);
     }
 
 
-
-    public static String SHA1(String content){
-        if(content == null){
+    public static String SHA1(String content) {
+        if (content == null) {
             throw new NullPointerException("待加密内容不能为 null");
         }
         return DigestUtils.sha1Hex(content);
     }
 
 
-    public static String SHA256(String content){
-        if(content == null){
+    public static String SHA256(String content) {
+        if (content == null) {
             throw new NullPointerException("待加密内容不能为 null");
         }
         return DigestUtils.sha256Hex(content);
     }
 
 
-    public static String SHA384(String content){
-        if(content == null){
+    public static String SHA384(String content) {
+        if (content == null) {
             throw new NullPointerException("待加密内容不能为 null");
         }
         return DigestUtils.sha384Hex(content);
     }
 
 
-    public static String SHA512(String content){
-        if(content == null){
+    public static String SHA512(String content) {
+        if (content == null) {
             throw new NullPointerException("待加密内容不能为 null");
         }
         return DigestUtils.sha512Hex(content);
-    }
-
-
-    public static void main(String[] args) {
-        System.out.println(MD5("123" + "BusyPHP"));
-
     }
 
 }

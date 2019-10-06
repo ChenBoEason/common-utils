@@ -1,8 +1,8 @@
-package com.x4096.common.utils.network.client;
+package com.x4096.common.utils.network.http;
 
-import com.x4096.common.utils.charset.CharsetConstants;
-import com.x4096.common.utils.common.ValidateUtils;
-import com.x4096.common.utils.network.client.config.HttpAsyncConfig;
+import com.x4096.common.utils.constant.CharsetConstants;
+import com.x4096.common.utils.network.http.config.HttpAsyncConfig;
+import com.x4096.common.utils.text.ValidateUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +60,7 @@ import java.util.Map;
  * 异步的HTTP请求对象，可设置代理
  * @author: 0x4096.peng@gmail.com
  * @date: 2018/12/18
- * @instructions: https://github.com/wsdl-king/AsyncHttpClientPool/blob/master/src/main/java/com/server/java/util/http/client/HttpAsyncClientUtils.java
+ * @instructions: https://github.com/wsdl-king/AsyncHttpClientPool/blob/master/src/main/java/com/server/java/util/http/http/HttpAsyncClientUtils.java
  */
 public class HttpAsyncClientUtils {
 

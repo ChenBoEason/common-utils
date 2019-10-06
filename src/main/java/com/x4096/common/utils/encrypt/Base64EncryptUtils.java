@@ -1,5 +1,6 @@
 package com.x4096.common.utils.encrypt;
 
+import com.x4096.common.utils.constant.CharsetConstants;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,19 +15,19 @@ import java.io.UnsupportedEncodingException;
  */
 public class Base64EncryptUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Base64EncryptUtils.class);
-
     private Base64EncryptUtils() {
     }
 
-    private static final String DEFAULT_CHARSET = "UTF-8";
+    private static final Logger LOGGER = LoggerFactory.getLogger(Base64EncryptUtils.class);
+
+    private static final String DEFAULT_CHARSET = CharsetConstants.UTF_8;
 
 
     /**
      * base64 加密
      *
      * @param content 待加密内容
-     * @return 加密后内容
+     * @return
      */
     public static String encrypt(String content) {
         if (content == null) {
@@ -47,7 +48,7 @@ public class Base64EncryptUtils {
      * base64 解密
      *
      * @param content 待解密内容
-     * @return 解密后内容
+     * @return
      */
     public static String decrypt(String content) {
         if (content == null) {

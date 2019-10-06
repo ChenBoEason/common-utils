@@ -1,4 +1,4 @@
-package com.x4096.common.utils.network.client;
+package com.x4096.common.utils.network.http;
 
 import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An HTTP & HTTP/2 client for Android and Java application
+ * An HTTP & HTTP/2 http for Android and Java application
  * @author: 0x4096.peng@gmail.com
  * @date: 2018/12/18
  * @instructions: 参考代码: https://github.com/wsdl-king/AsyncHttpClientPool/blob/master/src/main/java/com/server/java/util/http/client/OkClient.java

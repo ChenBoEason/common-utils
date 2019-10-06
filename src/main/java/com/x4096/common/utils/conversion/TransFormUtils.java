@@ -24,9 +24,12 @@ import java.util.Map;
  * @Author: 0x4096.peng@gmail.com
  * @Project: common-utils
  * @DateTime: 2019-07-10 00:19
- * @Description: obj,map,xml 等互转
+ * @Description: obj, map, xml 等互转
  */
 public class TransFormUtils {
+
+    private TransFormUtils() {
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransFormUtils.class);
 
@@ -41,15 +44,12 @@ public class TransFormUtils {
      * @return
      */
     public static Map<String, String> beanToMap(Object bean) {
-        Map<String, String> map = null;
+        Map<String, String> map;
         try {
             map = BeanUtils.describe(bean);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            LOGGER.error("", e);
+            return null;
         }
         map.remove("class");
         return map;

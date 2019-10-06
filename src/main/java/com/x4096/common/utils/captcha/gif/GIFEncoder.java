@@ -480,7 +480,7 @@ public class GIFEncoder {
     }
 
     /**
-     * Writes string to output stream
+     * Writes text to output stream
      */
     protected void writeString(String s) throws IOException {
         for (int i = 0; i < s.length(); i++) {

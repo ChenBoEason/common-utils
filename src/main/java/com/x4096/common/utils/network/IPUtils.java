@@ -14,15 +14,19 @@ import java.util.Enumeration;
  * @date: 2018/12/18
  * @instructions: IP 地址工具集, 包括网络请求IP, 本地IP(支持多网卡,只获取主机IP地址)
  */
-public class IpUtils {
+public class IPUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IpUtils.class);
+    private IPUtils() {
+
+    }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IPUtils.class);
 
     private static final String LOCAL_HOST_V4 = "127.0.0.1";
 
     private static final String LOCAL_HOST_V6 = "0:0:0:0:0:0:0:1";
 
-    private static final int IP_LENGTH = 15;
+    private static final int IPV4_MAX_LENGTH = 15;
 
     private static final String SEPARATOR = ",";
 
@@ -34,34 +38,35 @@ public class IpUtils {
      * @param request
      * @return
      */
-    public static String getNetIpAddr(HttpServletRequest request){
+    public static String getNetIpAddr(HttpServletRequest request) {
         String ipAddress = request.getHeader("x-forwarded-for");
 
-        if(ipAddress == null || ipAddress.length() == 0 || UNKNOWN.equalsIgnoreCase(ipAddress)) {
+        if (ipAddress == null || ipAddress.length() == 0 || UNKNOWN.equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("Proxy-Client-IP");
         }
 
-        if(ipAddress == null || ipAddress.length() == 0 || UNKNOWN.equalsIgnoreCase(ipAddress)) {
+        if (ipAddress == null || ipAddress.length() == 0 || UNKNOWN.equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("WL-Proxy-Client-IP");
         }
 
-        if(ipAddress == null || ipAddress.length() == 0 || UNKNOWN.equalsIgnoreCase(ipAddress)) {
+        if (ipAddress == null || ipAddress.length() == 0 || UNKNOWN.equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getRemoteAddr();
-            if(LOCAL_HOST_V4.equals(ipAddress) || LOCAL_HOST_V6.equals(ipAddress)){
+            if (LOCAL_HOST_V4.equals(ipAddress) || LOCAL_HOST_V6.equals(ipAddress)) {
                 /* 根据网卡取本机配置的IP */
                 InetAddress inet = null;
                 try {
                     inet = InetAddress.getLocalHost();
                 } catch (UnknownHostException e) {
                     LOGGER.error("", e);
+                    return null;
                 }
-                ipAddress= inet.getHostAddress();
+                ipAddress = inet.getHostAddress();
             }
         }
 
         /* 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割 */
-        if(ipAddress != null && ipAddress.length() > IP_LENGTH){
-            if(ipAddress.indexOf(SEPARATOR) > 0){
+        if (ipAddress != null && ipAddress.length() > IPV4_MAX_LENGTH) {
+            if (ipAddress.indexOf(SEPARATOR) > 0) {
                 ipAddress = ipAddress.substring(0, ipAddress.indexOf(SEPARATOR));
             }
         }

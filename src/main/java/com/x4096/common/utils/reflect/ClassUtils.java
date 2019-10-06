@@ -1,18 +1,20 @@
-package com.x4096.common.utils.reflection;
+package com.x4096.common.utils.reflect;
 
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import static io.lettuce.core.internal.LettuceClassUtils.CGLIB_CLASS_SEPARATOR;
 
 
 /**
@@ -213,6 +215,36 @@ public class ClassUtils {
             }
         }
         return classList;
+    }
+
+    /**
+     * 获取CGLib处理过后的实体的原Class.
+     */
+    public static Class<?> unwrapCglib(Object instance) {
+        Validate.notNull(instance, "Instance must not be null");
+        Class<?> clazz = instance.getClass();
+        if ((clazz != null) && clazz.getName().contains(CGLIB_CLASS_SEPARATOR)) {
+            Class<?> superClass = clazz.getSuperclass();
+            if ((superClass != null) && !Object.class.equals(superClass)) {
+                return superClass;
+            }
+        }
+        return clazz;
+    }
+
+    /**
+     * 递归返回所有的SupperClasses，包含Object.class
+     */
+    public static List<Class<?>> getAllSuperclasses(Class<?> cls) {
+        return ClassUtils.getAllSuperclasses(cls);
+    }
+
+
+    /**
+     * 递归返回本类及所有基类继承的接口，及接口继承的接口，比Spring中的相同实现完整
+     */
+    public static List<Class<?>> getAllInterfaces(Class<?> cls) {
+        return ClassUtils.getAllInterfaces(cls);
     }
 
 }

@@ -19,6 +19,9 @@ import java.util.Map;
  */
 public class IDCardUtils {
 
+    private IDCardUtils() {
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(IDCardUtils.class);
 
 
@@ -44,11 +47,13 @@ public class IDCardUtils {
     /**
      * 每位加权因子
      */
-    private static final int POWER[] = {
+    private static final int[] POWER = {
             7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2
     };
 
-    /** 第18位校检码 */
+    /**
+     * 第18位校检码
+     */
     public static final String VERIFY_CODE[] = {
             "1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2"
     };
@@ -152,19 +157,19 @@ public class IDCardUtils {
     /**
      * 将15位身份证号码转换为18位
      *
-     * @param idCard    15位身份编码
-     * @return          18位身份编码
+     * @param idCard 15位身份编码
+     * @return 18位身份编码
      */
     public static String conver15CardTo18(String idCard) {
-        if(StringUtils.isBlank(idCard)){
+        if (StringUtils.isBlank(idCard)) {
             throw new NullPointerException("身份证号不能为空!");
         }
 
-        if(StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH){
+        if (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH) {
             throw new IllegalArgumentException("身份证号只能为15位");
         }
 
-        String idCard18 = "";
+        String idCard18;
 
         if (isNum(idCard)) {
             /* 获取出生年月日 */
@@ -176,7 +181,7 @@ public class IDCardUtils {
                 LOGGER.error("身份证生日信息格式化异常", e);
             }
             Calendar cal = Calendar.getInstance();
-            if (birthDate != null){
+            if (birthDate != null) {
                 cal.setTime(birthDate);
             }
             /* 获取出生年(完全表现形式,如：2010) */
@@ -200,7 +205,6 @@ public class IDCardUtils {
     }
 
 
-
     /**
      * 验证18位身份编码是否合法
      *
@@ -208,7 +212,7 @@ public class IDCardUtils {
      * @return 是否合法
      */
     public static boolean is18IdCard(String idCard) {
-        if(StringUtils.isBlank(idCard) || StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH){
+        if (StringUtils.isBlank(idCard) || StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH) {
             return false;
         }
 
@@ -239,7 +243,7 @@ public class IDCardUtils {
      * @return 是否合法
      */
     public static boolean is15IdCard(String idCard) {
-        if(StringUtils.isBlank(idCard) || StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH){
+        if (StringUtils.isBlank(idCard) || StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH) {
             return false;
         }
 
@@ -257,7 +261,7 @@ public class IDCardUtils {
             }
             Calendar cal = Calendar.getInstance();
 
-            if (birthDate != null){
+            if (birthDate != null) {
                 cal.setTime(birthDate);
             }
 
@@ -270,7 +274,6 @@ public class IDCardUtils {
         }
         return true;
     }
-
 
 
     /**
@@ -364,12 +367,12 @@ public class IDCardUtils {
     /**
      * 根据身份编号获取年龄
      *
-     * @param idCard    身份编号
-     * @return          年龄
+     * @param idCard 身份编号
+     * @return 年龄
      */
     public static int getAge(String idCard) {
-        if(StringUtils.isBlank(idCard)
-            || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)){
+        if (StringUtils.isBlank(idCard)
+                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)) {
             throw new IllegalArgumentException("请输入正确的身份证号码!");
         }
 
@@ -387,34 +390,34 @@ public class IDCardUtils {
     /**
      * 根据身份编号获取生日
      *
-     * @param idCard    身份编号
-     * @return          生日 格式: yyyy-MM-dd exp: 1984-01-01
+     * @param idCard 身份编号
+     * @return 生日 格式: yyyy-MM-dd exp: 1984-01-01
      */
     public static String getBirth(String idCard) {
-        if(StringUtils.isBlank(idCard)
-                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)){
+        if (StringUtils.isBlank(idCard)
+                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)) {
             throw new IllegalArgumentException("请输入正确的身份证号码!");
         }
 
-       if (StringUtils.length(idCard) == CHINA_ID_MIN_LENGTH) {
+        if (StringUtils.length(idCard) == CHINA_ID_MIN_LENGTH) {
             idCard = conver15CardTo18(idCard);
         }
-        return idCard.substring(6, 10) + "-" + idCard.substring(10,12) + "-" + idCard.substring(12,14);
+        return idCard.substring(6, 10) + "-" + idCard.substring(10, 12) + "-" + idCard.substring(12, 14);
     }
 
     /**
      * 根据身份编号获取出生年
      *
-     * @param idCard    身份编号
-     * @return          出生年份 yyyy
+     * @param idCard 身份编号
+     * @return 出生年份 yyyy
      */
     public static String getYear(String idCard) {
-        if(StringUtils.isBlank(idCard)
-                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)){
+        if (StringUtils.isBlank(idCard)
+                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)) {
             throw new IllegalArgumentException("请输入正确的身份证号码!");
         }
 
-         if (StringUtils.length(idCard) == CHINA_ID_MIN_LENGTH) {
+        if (StringUtils.length(idCard) == CHINA_ID_MIN_LENGTH) {
             idCard = conver15CardTo18(idCard);
         }
         return idCard.substring(6, 10);
@@ -423,12 +426,12 @@ public class IDCardUtils {
     /**
      * 根据身份编号获取出生月份
      *
-     * @param idCard    身份编号
-     * @return          出生月份 MM
+     * @param idCard 身份编号
+     * @return 出生月份 MM
      */
     public static String getMonth(String idCard) {
-        if(StringUtils.isBlank(idCard)
-                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)){
+        if (StringUtils.isBlank(idCard)
+                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)) {
             throw new IllegalArgumentException("请输入正确的身份证号码!");
         }
 
@@ -441,12 +444,12 @@ public class IDCardUtils {
     /**
      * 根据身份编号获取出生天
      *
-     * @param idCard      身份编号
-     * @return            出生天 dd
+     * @param idCard 身份编号
+     * @return 出生天 dd
      */
     public static String getDay(String idCard) {
-        if(StringUtils.isBlank(idCard)
-                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)){
+        if (StringUtils.isBlank(idCard)
+                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)) {
             throw new IllegalArgumentException("请输入正确的身份证号码!");
         }
 
@@ -459,12 +462,12 @@ public class IDCardUtils {
     /**
      * 根据身份编号获取性别
      *
-     * @param idCard        身份编号
-     * @return              性别(M-男, F-女)
+     * @param idCard 身份编号
+     * @return 性别(M - 男, F - 女)
      */
     public static String getGender(String idCard) {
-        if(StringUtils.isBlank(idCard)
-                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)){
+        if (StringUtils.isBlank(idCard)
+                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)) {
             throw new IllegalArgumentException("请输入正确的身份证号码!");
         }
 
@@ -490,8 +493,8 @@ public class IDCardUtils {
      * @return 省级编码。
      */
     public static String getProvince(String idCard) {
-        if(StringUtils.isBlank(idCard)
-                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)){
+        if (StringUtils.isBlank(idCard)
+                || (StringUtils.length(idCard) != CHINA_ID_MIN_LENGTH && StringUtils.length(idCard) != CHINA_ID_MAX_LENGTH)) {
             throw new IllegalArgumentException("请输入正确的身份证号码!");
         }
         int len = idCard.length();
@@ -515,13 +518,12 @@ public class IDCardUtils {
     }
 
 
-
     /**
      * 验证小于当前日期 是否有效
      *
-     * @param iYear 待验证日期(年)
+     * @param iYear  待验证日期(年)
      * @param iMonth 待验证日期(月 1-12)
-     * @param iDate 待验证日期(日)
+     * @param iDate  待验证日期(日)
      * @return 是否有效
      */
     private static boolean validateDate(int iYear, int iMonth, int iDate) {

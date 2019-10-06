@@ -1,5 +1,6 @@
 package com.x4096.common.utils.encrypt;
 
+import com.x4096.common.utils.constant.CharsetConstants;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,10 @@ import java.util.Map;
  */
 public class RSAEncryptUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RSAEncryptUtils.class);
-
     private RSAEncryptUtils() {
     }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RSAEncryptUtils.class);
 
     private static final int KEY_SIZE_1024 = 1024;
 
@@ -38,12 +39,12 @@ public class RSAEncryptUtils {
     /**
      * 字符编码集
      */
-    private static final String CHAR_ENCODING = "UTF-8";
+    private static final String CHAR_ENCODING = CharsetConstants.UTF_8;
 
     /**
      * RSA 算法填充方式
      */
-    public static final String RSA_ALGORITHM = "RSA/ECB/PKCS1Padding";
+    private static final String RSA_ALGORITHM = "RSA/ECB/PKCS1Padding";
 
     /**
      * 签名算法
@@ -53,8 +54,6 @@ public class RSAEncryptUtils {
 
     /**
      * 生成 1024 keysize 的密匙对
-     *
-     * @return
      */
     public static KeyPair getKeyPair1024() {
         return getKeyPair(KEY_SIZE_1024);
@@ -63,8 +62,6 @@ public class RSAEncryptUtils {
 
     /**
      * 生成 2048 keysize 的密匙对
-     *
-     * @return
      */
     public static KeyPair getKeyPair2048() {
         return getKeyPair(KEY_SIZE_2048);
@@ -100,7 +97,7 @@ public class RSAEncryptUtils {
      *
      * @param content   待加密内容
      * @param publicKey RSA 公钥
-     * @return 加密后内容
+     * @return
      */
     public static String encryptByPublicKey(String content, String publicKey) {
         return encrypt(content, publicKey, true);
@@ -112,7 +109,7 @@ public class RSAEncryptUtils {
      *
      * @param content   待加密内容
      * @param publicKey RSA 私钥
-     * @return 加密后内容
+     * @return
      */
     public static String encryptByPrivateKey(String content, String publicKey) {
         return encrypt(content, publicKey, false);
@@ -124,7 +121,7 @@ public class RSAEncryptUtils {
      *
      * @param cryptograph 待解密密文
      * @param publicKey   RSA 公钥
-     * @return 解密后内容
+     * @return
      */
     public static String decryptByPublicKey(String cryptograph, String publicKey) {
         return decrypt(cryptograph, publicKey, true);
@@ -136,7 +133,7 @@ public class RSAEncryptUtils {
      *
      * @param cryptograph 待解密密文
      * @param privateKey  RSA 私钥
-     * @return 解密后内容
+     * @return
      */
     public static String decryptByPrivateKey(String cryptograph, String privateKey) {
         return decrypt(cryptograph, privateKey, false);
@@ -181,8 +178,6 @@ public class RSAEncryptUtils {
 
     /**
      * 获取 KeyFactory
-     *
-     * @return
      */
     private static KeyFactory getKeyFactory() {
         KeyFactory keyFactory = null;
@@ -232,7 +227,7 @@ public class RSAEncryptUtils {
             signature.update(content.getBytes(CHAR_ENCODING));
             return signature.verify(Base64.decodeBase64(sign.getBytes()));
         } catch (NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException | SignatureException e) {
-            LOGGER.error("RSA 校验签名异常, ", e);
+            LOGGER.error("RSA 校验签名异常, 待签名内容content: {}, 签名内容sign: {}, 公钥privateKey: {}", content, sign, publicKey, e);
         }
         return false;
     }
@@ -241,11 +236,11 @@ public class RSAEncryptUtils {
     /**
      * get KeyPair
      *
-     * @param length
+     * @param length keysize
      * @return
      */
     private static KeyPair getKeyPair(int length) {
-        /** RSA算法要求有一个可信任的随机数源 */
+        /* RSA算法要求有一个可信任的随机数源 */
         SecureRandom secureRandom = new SecureRandom();
         KeyPairGenerator keyPairGenerator = null;
         try {
@@ -283,7 +278,7 @@ public class RSAEncryptUtils {
      * @return
      */
     private static String encrypt(String content, String encryptKey, boolean isPublicKey) {
-        Key key = null;
+        Key key;
         if (isPublicKey) {
             key = getPublicKey(encryptKey);
         } else {
@@ -291,10 +286,10 @@ public class RSAEncryptUtils {
         }
 
         try {
-            /** 得到Cipher对象来实现对源数据的RSA加密 */
+            /* 得到Cipher对象来实现对源数据的RSA加密 */
             Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, key);
-            /** 执行加密操作 */
+            /* 执行加密操作 */
             byte[] bytes = cipher.doFinal(content.getBytes());
             return new String(Base64.encodeBase64(bytes), CHAR_ENCODING);
         } catch (Exception e) {
@@ -313,7 +308,7 @@ public class RSAEncryptUtils {
      * @return
      */
     private static String decrypt(String cryptograph, String decryptKey, boolean isPublicKey) {
-        Key key = null;
+        Key key;
         if (isPublicKey) {
             key = getPublicKey(decryptKey);
         } else {
@@ -321,10 +316,10 @@ public class RSAEncryptUtils {
         }
 
         try {
-            /** 得到Cipher对象对已用公钥加密的数据进行RSA解密 */
+            /* 得到Cipher对象对已用公钥加密的数据进行RSA解密 */
             Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, key);
-            /** 执行解密操作 */
+            /* 执行解密操作 */
             byte[] bytes = cipher.doFinal(Base64.decodeBase64(cryptograph.getBytes()));
             return new String(bytes, CHAR_ENCODING);
         } catch (Exception e) {

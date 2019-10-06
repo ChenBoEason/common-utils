@@ -1,5 +1,6 @@
 package com.x4096.common.utils.conversion;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,9 @@ import java.util.regex.Pattern;
  */
 public class MoneyUtils {
 
+    private MoneyUtils() {
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MoneyUtils.class);
 
     /**
@@ -32,6 +36,31 @@ public class MoneyUtils {
 
 
     /**
+     * 判断格式是否为元
+     *
+     * @param yuan
+     * @return
+     */
+    public static boolean isYuan(final String yuan) {
+        if (StringUtils.isBlank(yuan)) {
+            return false;
+        }
+        return y2FPattern.matcher(yuan).matches();
+    }
+
+
+    /**
+     * 判断格式是否为元
+     *
+     * @param yuan
+     * @return
+     */
+    public static boolean isYuan(final double yuan) {
+        return isYuan(String.valueOf(yuan));
+    }
+
+
+    /**
      * 元转分
      * 支持以下格式
      * #    1
@@ -41,14 +70,13 @@ public class MoneyUtils {
      * @param yuan
      * @return
      */
-    public static int changeF2Y(final String yuan) {
-        Matcher matcher = y2FPattern.matcher(yuan);
-        if (!matcher.matches()) {
+    public static int changeY2F(final String yuan) {
+        if (!isYuan(yuan)) {
             throw new IllegalArgumentException("元转分,参数格式不正确!转换内容: " + yuan);
         }
+
         NumberFormat format = NumberFormat.getInstance();
         Number number;
-
         try {
             number = format.parse(yuan);
         } catch (ParseException e) {
@@ -73,8 +101,8 @@ public class MoneyUtils {
      * @param yuan
      * @return
      */
-    public static int changeF2Y(final double yuan) {
-        return changeF2Y(String.valueOf(yuan));
+    public static int changeY2F(final double yuan) {
+        return changeY2F(String.valueOf(yuan));
     }
 
 
@@ -84,7 +112,7 @@ public class MoneyUtils {
      * @param fen
      * @return
      */
-    public static String changeY2F(final String fen) {
+    public static String changeF2Y(final String fen) {
         Matcher matcher = f2YPattern.matcher(fen);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("分转元,参数格式不正确!转换内容: " + fen);
@@ -99,8 +127,8 @@ public class MoneyUtils {
      * @param fen
      * @return
      */
-    public static String changeY2F(final int fen) {
-        return changeY2F(String.valueOf(fen));
+    public static String changeF2Y(final int fen) {
+        return changeF2Y(String.valueOf(fen));
     }
 
 }

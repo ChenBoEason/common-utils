@@ -6,7 +6,7 @@ package com.x4096.common.utils.date;
  * @DateTime: 2019/6/1 22:28
  * @Description: 时间格式转换枚举类, 常用时间格式化
  */
-public enum DateFormatEnums {
+public enum DateFormatEnum {
 
 
     CHINESE_DATE_12("yyyy年MM月dd日 hh时mm分ss秒"),
@@ -26,7 +26,7 @@ public enum DateFormatEnums {
 
     private final String format;
 
-    DateFormatEnums(String format) {
+    DateFormatEnum(String format) {
         this.format = format;
     }
 

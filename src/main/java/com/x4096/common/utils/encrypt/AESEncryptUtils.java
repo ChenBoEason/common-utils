@@ -1,6 +1,7 @@
 package com.x4096.common.utils.encrypt;
 
 
+import com.x4096.common.utils.constant.CharsetConstants;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,10 +18,10 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class AESEncryptUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AESEncryptUtils.class);
-
     private AESEncryptUtils() {
     }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AESEncryptUtils.class);
 
     /**
      * 加密 KEY 必须为 16 位
@@ -30,7 +31,7 @@ public class AESEncryptUtils {
     /**
      * 默认字符集编码
      */
-    private static final String DEFAULT_ENCODING = "UTF-8";
+    private static final String DEFAULT_ENCODING = CharsetConstants.UTF_8;
 
     /**
      * 填充方式
@@ -122,6 +123,5 @@ public class AESEncryptUtils {
     public static String decrypt(String content) {
         return decrypt(content, KEY);
     }
-
 
 }

@@ -6,7 +6,7 @@ package com.x4096.common.utils.date;
  * @DateTime: 2019/6/1 22:04
  * @Description: 时间枚举类
  */
-public enum DateEnums {
+public enum DateEnum {
 
     /** 秒 */
     SECOND(13),
@@ -28,7 +28,7 @@ public enum DateEnums {
 
     private final int code;
 
-    DateEnums(int code) {
+    DateEnum(int code) {
         this.code = code;
     }
 

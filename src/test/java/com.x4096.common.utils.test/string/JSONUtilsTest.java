@@ -1,7 +1,7 @@
 package com.x4096.common.utils.test.string;
 
 import com.x4096.common.utils.mapper.JacksonMapperUtils;
-import com.x4096.common.utils.test.Student;
+import com.x4096.common.utils.test.pojo.Student;
 
 /**
  * @Author: 0x4096.peng@gmail.com

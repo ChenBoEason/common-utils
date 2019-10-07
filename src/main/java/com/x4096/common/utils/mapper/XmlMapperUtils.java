@@ -3,7 +3,6 @@ package com.x4096.common.utils.mapper;
 import com.thoughtworks.xstream.XStream;
 import com.x4096.common.utils.constant.CharsetConstants;
 import com.x4096.common.utils.reflect.AnnotationUtils;
-import com.x4096.common.utils.reflect.ClassUtils;
 import org.apache.commons.lang3.Validate;
 
 import javax.xml.bind.*;
@@ -34,22 +33,30 @@ public class XmlMapperUtils {
     /**
      * Java Object->Xml 默认 UTF-8 编码
      */
-    public static String toXml(Object root) {
-        return toXml(root, CharsetConstants.UTF_8);
+    public static String toXml(Object object) {
+        return toXml(object, CharsetConstants.UTF_8, true);
+    }
+
+
+    /**
+     * Java Object->Xml 默认 UTF-8 编码
+     */
+    public static String toXml(Object object, boolean generateDocument) {
+        return toXml(object, CharsetConstants.UTF_8, generateDocument);
     }
 
 
     /**
      * Java Object->Xml with encoding.
      */
-    public static String toXml(Object root, String encoding) {
-        boolean isXmlRootElement = AnnotationUtils.isAnnotation(root.getClass(), XmlRootElement.class);
+    public static String toXml(Object object, String encoding, boolean generateDocument) {
+        boolean isXmlRootElement = AnnotationUtils.isAnnotation(object.getClass(), XmlRootElement.class);
         if (isXmlRootElement) {
-            Class clazz = ClassUtils.unwrapCglib(root);
-            return toXml(root, clazz, encoding);
+            // Class clazz = ClassUtils.unwrapCglib(root); 没有必要进行代理类擦除
+            return toXml(object, object.getClass(), encoding, generateDocument);
         } else {
-            xStream.processAnnotations(root.getClass());
-            return xStream.toXML(root);
+            xStream.processAnnotations(object.getClass());
+            return xStream.toXML(object);
         }
     }
 
@@ -60,7 +67,20 @@ public class XmlMapperUtils {
     public static String toXml(Object root, Class clazz, String encoding) {
         StringWriter writer = new StringWriter();
         try {
-            createMarshaller(clazz, encoding).marshal(root, writer);
+            createMarshaller(clazz, encoding, true).marshal(root, writer);
+            return writer.toString();
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Java Object->Xml with encoding.
+     */
+    public static String toXml(Object root, Class clazz, String encoding, boolean generateDocument) {
+        StringWriter writer = new StringWriter();
+        try {
+            createMarshaller(clazz, encoding, generateDocument).marshal(root, writer);
             return writer.toString();
         } catch (JAXBException e) {
             throw new RuntimeException(e);
@@ -72,14 +92,22 @@ public class XmlMapperUtils {
      * Java Collection->Xml without encoding, 特别支持Root Element是Collection的情形.
      */
     public static String toXml(Collection<?> root, String rootName, Class clazz) {
-        return toXml(root, rootName, clazz, CharsetConstants.UTF_8);
+        return toXml(root, rootName, clazz, CharsetConstants.UTF_8, true);
+    }
+
+
+    /**
+     * Java Collection->Xml without encoding, 特别支持Root Element是Collection的情形.
+     */
+    public static String toXml(Collection<?> root, String rootName, Class clazz, boolean generateDocument) {
+        return toXml(root, rootName, clazz, CharsetConstants.UTF_8, generateDocument);
     }
 
 
     /**
      * Java Collection->Xml with encoding, 特别支持Root Element是Collection的情形.
      */
-    public static String toXml(Collection<?> root, String rootName, Class clazz, String encoding) {
+    public static String toXml(Collection<?> root, String rootName, Class clazz, String encoding, boolean generateDocument) {
         CollectionWrapper wrapper = new CollectionWrapper();
         wrapper.collection = root;
 
@@ -87,7 +115,7 @@ public class XmlMapperUtils {
         StringWriter writer = new StringWriter();
 
         try {
-            createMarshaller(clazz, encoding).marshal(wrapperElement, writer);
+            createMarshaller(clazz, encoding, generateDocument).marshal(wrapperElement, writer);
             return writer.toString();
         } catch (JAXBException e) {
             throw new RuntimeException(e);
@@ -123,13 +151,18 @@ public class XmlMapperUtils {
     /**
      * 创建Marshaller并设定encoding(可为null).
      * 线程不安全，需要每次创建或pooling。
+     * generateDocument 是否生成文档描述（默认生成）即 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
      */
-    private static Marshaller createMarshaller(Class clazz, String encoding) {
+    private static Marshaller createMarshaller(Class clazz, String encoding, boolean generateDocument) {
         try {
             JAXBContext jaxbContext = getJaxbContext(clazz);
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);
+            /* 是否移除 <?xml version="1.0" encoding="UTF-8" standalone="yes"?> */
+            if (!generateDocument) {
+                marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+            }
             return marshaller;
         } catch (JAXBException e) {
             throw new RuntimeException(e);

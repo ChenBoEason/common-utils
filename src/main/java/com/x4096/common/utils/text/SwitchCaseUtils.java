@@ -7,12 +7,18 @@ import org.apache.commons.lang3.StringUtils;
  * @Author: 0x4096.peng@gmail.com
  * @Project: common-utils
  * @DateTime: 2019-10-06 23:11
- * @Description: 驼峰转换工具类
+ * @Description: 驼峰-蛇形命名法转换工具类
  */
-public class CamelCaseUtils {
+public class SwitchCaseUtils {
+
+    private SwitchCaseUtils() {
+    }
 
     /**
      * 蛇形命名法(snake case) -> 驼峰命名法(camel case)字符转换
+     * null -> null
+     * "" -> ""
+     * "  " -> "  "
      * hello_world -> helloWorld
      * hi_hello_world -> hiHelloWorld
      * hello_ -> hello
@@ -23,7 +29,7 @@ public class CamelCaseUtils {
      */
     public static String snake2Camel(String snakeCase) {
         if (StringUtils.isBlank(snakeCase)) {
-            return "";
+            return snakeCase;
         }
         int index = StringUtils.indexOf(snakeCase, "_");
         if (index != -1) {
@@ -44,6 +50,9 @@ public class CamelCaseUtils {
 
     /**
      * 驼峰命名法 -> 蛇形命名法
+     * null -> null
+     * "" -> ""
+     * "  " -> "  "
      * helloWorld -> hello_world
      * hiHelloWorld -> hi_hello_world
      * Hello -> hello
@@ -53,9 +62,8 @@ public class CamelCaseUtils {
      */
     public static String camel2Snake(String camelCase) {
         if (StringUtils.isBlank(camelCase)) {
-            return "";
+            return camelCase;
         }
-
         StringBuilder sb = new StringBuilder();
         char[] chars = camelCase.toCharArray();
         for (int i = 0, length = chars.length; i < length; i++) {
@@ -73,12 +81,6 @@ public class CamelCaseUtils {
         return sb.toString();
     }
 
-
-    public static void main(String[] args) {
-        System.err.println(snake2Camel("_hello_"));
-        System.err.println(camel2Snake("Hello"));
-
-    }
 
     /**
      * 将字符串首字母转换为大写

@@ -1,10 +1,10 @@
-package com.x4096.common.utils.test;
+package com.x4096.common.utils.test.pojo;
 
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 /**
  * @Author: 0x4096.peng@gmail.com
@@ -16,10 +16,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Student {
 
-    @XmlElement(name = "USER")
+    // @XmlElement(name = "USER")
     private String username;
 
-    private Integer age;
+    private int age;
+
+    private List<String> stringList;
 
     public String getUsername() {
         return username;
@@ -29,12 +31,19 @@ public class Student {
         this.username = username;
     }
 
-    public Integer getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
+    public List<String> getStringList() {
+        return stringList;
+    }
+
+    public void setStringList(List<String> stringList) {
+        this.stringList = stringList;
+    }
 }

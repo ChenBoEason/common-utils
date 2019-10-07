@@ -17,7 +17,6 @@ import java.util.Enumeration;
 public class IPUtils {
 
     private IPUtils() {
-
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IPUtils.class);

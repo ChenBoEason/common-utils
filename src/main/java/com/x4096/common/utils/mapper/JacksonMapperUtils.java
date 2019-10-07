@@ -45,6 +45,10 @@ public class JacksonMapperUtils {
         DEFAULT_MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
     }
 
+    static {
+        DEFAULT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
+
 
     /**
      * 对象 -> jsonString
@@ -52,20 +56,20 @@ public class JacksonMapperUtils {
      * T 可以是POJO，也可以是Collection或数组。 如果对象为Null, 返回"null". 如果集合为空集合, 返回"[]"
      */
     public static <T> String toJsonString(T t) {
-        return toJsonString(t, MAPPER);
+        return toJsonString(t, DEFAULT_MAPPER);
     }
 
 
     /**
      * 对象 -> jsonString
-     * 序列化所有字段,包括字段内容为 null
+     * 序列化所有字段,包括字段内容为(isNonNull false控制) null
      * T 可以是POJO，也可以是Collection或数组。 如果对象为Null, 返回"null". 如果集合为空集合, 返回"[]".
      */
     public static <T> String toJsonString(T t, boolean isNonNull) {
         if (isNonNull) {
             return toJsonString(t);
         }
-        return toJsonString(t, DEFAULT_MAPPER);
+        return toJsonString(t, MAPPER);
     }
 
 

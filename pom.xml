@@ -4,10 +4,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.0x4096.utils</groupId>
+    <groupId>com.github.0x4096</groupId>
     <artifactId>common-utils</artifactId>
     <version>1.0.0</version>
 
+    <description>封装基本工具类</description>
     <name>common-utils</name>
     <url>https://github.com/0x4096/common-utils</url>
 
@@ -43,7 +44,6 @@
             <scope>${scope}</scope>
         </dependency>
 
-
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -57,7 +57,6 @@
             <version>1.8</version>
             <scope>${scope}</scope>
         </dependency>
-
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -121,14 +120,15 @@
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
             <version>1.6</version>
+            <scope>${scope}</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.fge</groupId>
             <artifactId>json-schema-validator</artifactId>
             <version>2.2.6</version>
+            <scope>${scope}</scope>
         </dependency>
-
 
         <dependency>
             <groupId>com.googlecode.juniversalchardet</groupId>
@@ -136,7 +136,6 @@
             <version>1.0.3</version>
             <scope>${scope}</scope>
         </dependency>
-
 
         <!-- xml转map-->
         <dependency>
@@ -152,7 +151,6 @@
             <version>1.1.18</version>
             <scope>${scope}</scope>
         </dependency>
-
 
         <!-- xml转map-->
         <!-- xstream解析包 -->

@@ -15,9 +15,9 @@ import java.util.concurrent.TimeUnit;
  * @date: 2018/12/18
  * @instructions: 参考代码: https://github.com/wsdl-king/AsyncHttpClientPool/blob/master/src/main/java/com/server/java/util/http/client/OkClient.java
  */
-public class OkClientUtils {
+public class OkHttpClientUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OkClientUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OkHttpClientUtils.class);
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 

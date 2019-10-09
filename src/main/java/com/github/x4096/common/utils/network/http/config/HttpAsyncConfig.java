@@ -147,4 +147,20 @@ public class HttpAsyncConfig {
     public void setProxyPassword(String proxyPassword) {
         this.proxyPassword = proxyPassword;
     }
+
+    @Override
+    public String toString() {
+        return "HttpAsyncConfig{" +
+                "socketTimeout=" + socketTimeout +
+                ", connectTimeout=" + connectTimeout +
+                ", poolMaxSize=" + poolMaxSize +
+                ", maxPerRoute=" + maxPerRoute +
+                ", connectionRequestTimeout=" + connectionRequestTimeout +
+                ", proxyHost='" + proxyHost + '\'' +
+                ", proxyPort=" + proxyPort +
+                ", proxyUsername='" + proxyUsername + '\'' +
+                ", proxyPassword='" + proxyPassword + '\'' +
+                '}';
+    }
+
 }

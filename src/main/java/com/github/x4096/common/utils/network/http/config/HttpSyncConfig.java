@@ -83,4 +83,16 @@ public class HttpSyncConfig {
     public void setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
+
+    @Override
+    public String toString() {
+        return "HttpSyncConfig{" +
+                "maxTotalPool=" + maxTotalPool +
+                ", maxConPerRoute=" + maxConPerRoute +
+                ", socketTimeout=" + socketTimeout +
+                ", connectionRequestTimeout=" + connectionRequestTimeout +
+                ", connectTimeout=" + connectTimeout +
+                '}';
+    }
+
 }

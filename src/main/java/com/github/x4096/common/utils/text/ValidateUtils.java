@@ -171,7 +171,7 @@ public class ValidateUtils {
      *
      * @param phone
      * @return
-     * @apiNote 手机号更新比较频繁, 此API无法确保一直可用,若失效请联系开发负责人
+     * @apiNote 手机号更新比较频繁, 此API无法确保一直可用
      */
     @Deprecated
     public static boolean isMobileExact(String phone) {

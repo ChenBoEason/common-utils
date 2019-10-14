@@ -1,11 +1,8 @@
 package com.github.x4096.common.utils.text;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author: 0x4096.peng@gmail.com
@@ -29,32 +26,28 @@ public class RandomStringUtils {
     private static final String NUMBER_CHAR = "0123456789";
     private static final String ALL_CHAR = NUMBER_CHAR + LETTER_CHAR;
 
+    private static final Random RANDOM = new Random();
 
-    /**
-     * 将以逗号分隔的字符串转换成字符串集合
-     *
-     * @param str
-     * @return
-     */
-    public static List<String> splitToListString(String str) {
-        if (StringUtils.isEmpty(str)) {
-            return Lists.newArrayList();
-        }
-        List<String> strList = Splitter.on(",").trimResults().omitEmptyStrings().splitToList(str);
-        return strList.stream().collect(Collectors.toList());
+
+    public static UUID UUID() {
+        ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();
+        return new UUID(threadLocalRandom.nextLong(), threadLocalRandom.nextLong());
     }
 
 
-    public static String UUID() {
-        return UUID.randomUUID().toString();
+    /**
+     * 随机生成 uuid
+     */
+    public static String uuid() {
+        return UUID().toString();
     }
 
 
     /**
      * 随机生成32位字符串
      */
-    public static String UUIDWithOut() {
-        return UUID().replace("-", "");
+    public static String uuid32() {
+        return UUID().toString().replace("-", "");
     }
 
 
@@ -63,7 +56,7 @@ public class RandomStringUtils {
      */
     public static String random8Chars() {
         StringBuilder stringBuilder = new StringBuilder();
-        String uuid = UUID();
+        String uuid = uuid32();
         for (int i = 0; i < 8; i++) {
             String str = uuid.substring(i * 4, i * 4 + 4);
             int x = Integer.parseInt(str, 16);
@@ -80,8 +73,7 @@ public class RandomStringUtils {
      * @return
      */
     public static int integer(int scopeMin, int scoeMax) {
-        Random random = new Random();
-        return (random.nextInt(scoeMax) % (scoeMax - scopeMin + 1) + scopeMin);
+        return (RANDOM.nextInt(scoeMax) % (scoeMax - scopeMin + 1) + scopeMin);
     }
 
     /**
@@ -92,9 +84,8 @@ public class RandomStringUtils {
      */
     public static String number(int length) {
         StringBuilder sb = new StringBuilder();
-        Random random = new Random();
         for (int i = 0; i < length; i++) {
-            sb.append(NUMBER_CHAR.charAt(random.nextInt(NUMBER_CHAR.length())));
+            sb.append(NUMBER_CHAR.charAt(RANDOM.nextInt(NUMBER_CHAR.length())));
         }
         return sb.toString();
     }
@@ -107,9 +98,8 @@ public class RandomStringUtils {
      */
     public static String string(int length) {
         StringBuilder sb = new StringBuilder();
-        Random random = new Random();
         for (int i = 0; i < length; i++) {
-            sb.append(ALL_CHAR.charAt(random.nextInt(ALL_CHAR.length())));
+            sb.append(ALL_CHAR.charAt(RANDOM.nextInt(ALL_CHAR.length())));
         }
         return sb.toString();
     }
@@ -122,9 +112,8 @@ public class RandomStringUtils {
      */
     public static String mixString(int length) {
         StringBuilder sb = new StringBuilder();
-        Random random = new Random();
         for (int i = 0; i < length; i++) {
-            sb.append(ALL_CHAR.charAt(random.nextInt(LETTER_CHAR.length())));
+            sb.append(ALL_CHAR.charAt(RANDOM.nextInt(LETTER_CHAR.length())));
         }
         return sb.toString();
     }

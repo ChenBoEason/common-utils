@@ -14,15 +14,15 @@ import org.slf4j.LoggerFactory;
  * @Author: 0x4096.peng@gmail.com
  * @Project: common-utils
  * @DateTime: 2019-07-19 00:22
- * @Description: 中国字工具类
+ * @Description: 中国汉字拼音工具类
  * 部分参考: https://github.com/0opslab/opslabJutil/blob/master/src/main/java/com/opslab/util/ChinesUtil.java
  */
-public class ChineseUtils {
+public class ChinesePinYinUtils {
 
-    private ChineseUtils() {
+    private ChinesePinYinUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChineseUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChinesePinYinUtils.class);
 
     /**
      * 中文Unicode范围
@@ -33,10 +33,10 @@ public class ChineseUtils {
     /**
      * 获取输入中文字符串拼音
      *
-     * @param inputString  汉字串
+     * @param inputString 汉字串
      * @return
      */
-    public static String getPingYin(String inputString) {
+    public static String getPinYin(String inputString) {
         if (StringUtils.isBlank(inputString)) {
             return "";
         }
@@ -71,8 +71,11 @@ public class ChineseUtils {
      * @return 汉语拼音首字母
      */
     public static String getFirstSpell(String chinese) {
-        StringBuilder pybf = new StringBuilder();
+        if (StringUtils.isBlank(chinese)) {
+            return "";
+        }
         char[] arr = chinese.toCharArray();
+        StringBuilder pybf = new StringBuilder();
         HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
         defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
@@ -104,11 +107,11 @@ public class ChineseUtils {
         if (StringUtils.isBlank(chinese)) {
             return "";
         }
-        StringBuffer pybf = new StringBuffer();
-        char[] arr = chinese.toCharArray();
+        StringBuilder pybf = new StringBuilder();
         HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
         defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+        char[] arr = chinese.toCharArray();
         for (char c : arr) {
             if (c > 128) {
                 try {

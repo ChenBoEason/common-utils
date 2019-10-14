@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
  * @Author: 0x4096.peng@gmail.com
  * @Project: common-utils
  * @DateTime: 2019-10-12 23:44
- * @Description:
+ * @Description: 手机号生成工具类
  */
 public class ChineseMobileUtils {
 

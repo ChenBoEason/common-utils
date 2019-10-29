@@ -1,6 +1,8 @@
 package com.github.x4096.common.utils.text;
 
 import com.alibaba.fastjson.JSON;
+import com.github.x4096.common.utils.date.enums.DateFormatEnum;
+import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
@@ -85,6 +87,26 @@ public class ValidateUtils {
      * 网络协议
      */
     private static final String[] SCHEMES = {"http", "https"};
+
+    /**
+     * 时间格式 yyyy-MM-dd
+     */
+    private static String REGEX_YEAR_MONTH_DAY = "((\\d{2}(([02468][048])|([13579][26]))[\\-/\\s]?((((0?[13578])|(1[02]))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-/\\s]?((((0?[13578])|(1[02]))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
+    private static final Pattern REGEX_YEAR_MONTH_DAY_PATTERN = Pattern.compile(REGEX_YEAR_MONTH_DAY);
+
+
+    /**
+     * 时间格式 yyyy-MM-dd hh:mm:ss
+     */
+    private static String REGEX_YEAR_MONTH_DAY_H_M_S_12 = REGEX_YEAR_MONTH_DAY + "(\\s(((0[0-9])|([1][0-2])):([0-5]?[0-9])((\\s)|(:([0-5]?[0-9]))?)))?";
+    private static final Pattern REGEX_YEAR_MONTH_DAY_H_M_S_12_PATTERN = Pattern.compile(REGEX_YEAR_MONTH_DAY_H_M_S_12);
+
+
+    /**
+     * 时间格式 yyyy-MM-dd HH:mm:ss
+     */
+    private static String REGEX_YEAR_MONTH_DAY_H_M_S_24 = REGEX_YEAR_MONTH_DAY + "(\\s(((0[0-9])|([1-2][0-3])):([0-5]?[0-9])((\\s)|(:([0-5]?[0-9]))?)))?";
+    private static final Pattern REGEX_YEAR_MONTH_DAY_H_M_S_24_PATTERN = Pattern.compile(REGEX_YEAR_MONTH_DAY_H_M_S_24);
 
 
     /**
@@ -276,5 +298,33 @@ public class ValidateUtils {
     public static boolean isPortEffective(int effectivePort) {
         return effectivePort >= PORT_EFFECTIVE && effectivePort <= PORT_MAX;
     }
+
+    /**
+     * 验证时间是否合法
+     * yyyy-MM-dd          2019-1-11 2019-01-11
+     * yyyy-MM-dd HH:mm:ss 2019-10-22 01:11:11 true 2019-10-22 1:11:11  false
+     * yyyy-MM-dd hh:mm:ss 2019-10-22 01:11:11 true 2019-10-22 13:11:11 false
+     *
+     * @param datetime
+     * @param dateFormatEnum 目前只支持两种格式校验:  yyyy-MM-dd yyyy-MM-dd hh:mm:ss yyyy-MM-dd HH:mm:ss
+     * @return
+     */
+    public static boolean isLegalDate(String datetime, DateFormatEnum dateFormatEnum) {
+        if (StringUtils.isBlank(datetime)) {
+            return false;
+        }
+        Preconditions.checkNotNull(dateFormatEnum, "BQDateFormatEnum 不能为null");
+        switch (dateFormatEnum) {
+            case YEAR_MONTH_DAY:
+                return REGEX_YEAR_MONTH_DAY_PATTERN.matcher(datetime).matches();
+            case YEAR_MONTH_DAY_12:
+                return REGEX_YEAR_MONTH_DAY_H_M_S_12_PATTERN.matcher(datetime).matches();
+            case YEAR_MONTH_DAY_24:
+                return REGEX_YEAR_MONTH_DAY_H_M_S_24_PATTERN.matcher(datetime).matches();
+            default:
+                throw new IllegalArgumentException("DateFormatEnum 格式不支持");
+        }
+    }
+
 
 }

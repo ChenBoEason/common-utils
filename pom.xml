@@ -16,8 +16,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <!--<scope>provided</scope>-->
-        <!-- TODO 发版时切换为 provided -->
         <scope>compile</scope>
     </properties>
 

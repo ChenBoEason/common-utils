@@ -8,8 +8,12 @@ package com.github.x4096.common.utils.network.http.enums;
  */
 public enum HttpContentTypeEnum {
 
-    APPLICATION_JSON("application/json;charset=UTF-8", ""),
-    APPLICATION_X_WWW_FORM_URLENCODED("application/x-www-form-urlencoded", ""),
+    TEXT_HTML("text/html", "HTML格式"),
+    TEXT_PLAIN("text/plain", "纯文本格式"),
+    TEXT_XML("text/xml", "XML格式"),
+
+    APPLICATION_JSON("application/json", "JSON数据格式"),
+    APPLICATION_X_WWW_FORM_URLENCODED("application/x-www-form-urlencoded", "表单默认的提交数据的格式"),
 
     ;
 

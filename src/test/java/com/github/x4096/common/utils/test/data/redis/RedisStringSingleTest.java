@@ -8,6 +8,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Duration;
+import java.util.Map;
 
 /**
  * @Author: 0x4096.peng@gmail.com
@@ -21,7 +22,7 @@ public class RedisStringSingleTest {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
         /* 单节点 */
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName("127.0.0.1");
+        redisStandaloneConfiguration.setHostName("192.168.2.103");
         redisStandaloneConfiguration.setPort(6379);
         redisStandaloneConfiguration.setDatabase(0);
 
@@ -47,6 +48,24 @@ public class RedisStringSingleTest {
         Boolean res = stringJedisTemplate.delete("key");
 
         System.err.println(res);
+
+
+        // for (int i = 0; i < 100; i++) {
+        //     stringJedisTemplate.hPut("alipay", RandomStringUtils.number(5), DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        // }
+
+        Map<Object, Object> hash = stringJedisTemplate.hGetAll("alipay");
+
+        hash.forEach((key, value) -> {
+            System.err.println(key + ": " + value);
+            String k = (String) key;
+            int kInt = Integer.valueOf(k);
+            if (kInt % 2 == 0) {
+                stringJedisTemplate.hDelete("alipay", key);
+            }
+        });
+
+
     }
 
 }

@@ -1,4 +1,4 @@
-package com.github.x4096.common.utils.text;
+package com.github.x4096.common.utils.life;
 
 import java.util.Random;
 

@@ -6,7 +6,7 @@ package com.github.x4096.common.utils.data.redis.enums;
  * @DateTime: 2019-07-20 11:10
  * @Description: Redis 搭建模式
  */
-public enum RedisModelEnum {
+public enum RedisStrategyEnum {
 
     /**
      * 单节点模式

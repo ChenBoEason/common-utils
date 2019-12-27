@@ -1,4 +1,4 @@
-package com.github.x4096.common.utils.common;
+package com.github.x4096.common.utils.life;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -554,23 +554,4 @@ public class IDCardUtils {
         return (iDate >= 1) && (iDate <= datePerMonth);
     }
 
-
-    public static void main(String[] args) {
-        System.out.println(is18IdCard("101111111111111111"));
-        // 411323198909011460
-        // 411323198909011460
-        System.out.println(conver15CardTo18("411323890901146"));
-
-        System.out.println(is15IdCard("411323890901146"));
-        System.out.println(is18IdCard("411323198909011460"));
-        System.out.println(getAge("411323198909011460"));
-        System.out.println(getBirth("411323198909011460"));
-        System.out.println(getYear("411323198909011460"));
-        System.out.println(getMonth("411323198909011460"));
-        System.out.println(getDay("411323198909011460"));
-        System.out.println(getGender("411323198909011460"));
-        System.out.println(getProvince("411323198909011460"));
-
-
-    }
 }

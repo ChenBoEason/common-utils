@@ -8,7 +8,7 @@
     <artifactId>common-utils</artifactId>
     <version>1.0.0</version>
 
-    <description>封装基本工具类</description>
+    <description>基本工具类</description>
     <name>common-utils</name>
     <url>https://github.com/0x4096/common-utils</url>
 
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.60</version>
+            <version>1.2.62</version>
             <scope>${scope}</scope>
         </dependency>
 
@@ -228,7 +228,6 @@
             <version>3.2.0</version>
             <scope>${scope}</scope>
         </dependency>
-
 
     </dependencies>
 

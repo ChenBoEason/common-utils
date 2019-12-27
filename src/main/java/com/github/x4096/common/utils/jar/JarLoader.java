@@ -82,13 +82,13 @@ public final class JarLoader extends URLClassLoader {
 
         /* iterate all jar */
         File[] allJars = new File(path).listFiles(jarFilter);
-        List<URL> jarURLs = new ArrayList<URL>(allJars.length);
+        List<URL> jarURLs = new ArrayList<>(allJars.length);
 
-        for (int i = 0; i < allJars.length; i++) {
+        for (File allJar : allJars) {
             try {
-                jarURLs.add(allJars[i].toURI().toURL());
+                jarURLs.add(allJar.toURI().toURL());
             } catch (Exception e) {
-                logger.error("系统加载jar包出错",e);
+                logger.error("系统加载jar包出错", e);
                 throw new RuntimeException("Error in getting jar URL", e);
             }
         }

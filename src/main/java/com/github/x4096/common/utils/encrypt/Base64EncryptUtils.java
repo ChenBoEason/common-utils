@@ -1,6 +1,7 @@
 package com.github.x4096.common.utils.encrypt;
 
 import com.github.x4096.common.utils.constant.CharsetConstants;
+import com.google.common.base.Preconditions;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +31,7 @@ public class Base64EncryptUtils {
      * @return
      */
     public static String encrypt(String content) {
-        if (content == null) {
-            throw new NullPointerException("加密内容不能为null");
-        }
+        Preconditions.checkNotNull(content, "加密内容不能为null");
         Base64 base64 = new Base64();
         byte[] textByte = new byte[0];
         try {
@@ -51,9 +50,7 @@ public class Base64EncryptUtils {
      * @return
      */
     public static String decrypt(String content) {
-        if (content == null) {
-            throw new NullPointerException("解密内容不能为null");
-        }
+        Preconditions.checkNotNull(content, "解密内容不能为null");
         Base64 base64 = new Base64();
         try {
             return new String(base64.decode(content), DEFAULT_CHARSET);

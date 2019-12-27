@@ -320,6 +320,7 @@ public class DateUtils {
         return result;
     }
 
+
     /**
      * 获取某个月有多少天, 考虑闰年等因数, 移植Jodd Core的TimeUtil
      */
@@ -352,7 +353,7 @@ public class DateUtils {
         return cal.get(field);
     }
 
-    private static int getWithMondayFirst(final Date date, int field) {
+    private static int getWithMondayFirst(Date date, int field) {
         Validate.notNull(date, "The date must not be null");
         Calendar cal = Calendar.getInstance();
         cal.setFirstDayOfWeek(Calendar.MONDAY);

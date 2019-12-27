@@ -8,7 +8,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Duration;
-import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @Author: 0x4096.peng@gmail.com
@@ -18,7 +18,11 @@ import java.util.Map;
  */
 public class RedisStringSingleTest {
 
-    public static void main(String[] args) {
+    private static CountDownLatch startSignal = new CountDownLatch(1);
+    //用来表示裁判员需要维护的是6个运动员
+    private static CountDownLatch endSignal = new CountDownLatch(6);
+
+    public static void main(String[] args) throws InterruptedException {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
         /* 单节点 */
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
@@ -44,28 +48,10 @@ public class RedisStringSingleTest {
 
         StringJedisTemplate stringJedisTemplate = new StringJedisTemplate(stringRedisTemplate);
 
-        stringJedisTemplate.set("key", "value");
-        Boolean res = stringJedisTemplate.delete("key");
+        String value = "1";
+        stringJedisTemplate.set("hhh", value);
 
-        System.err.println(res);
-
-
-        // for (int i = 0; i < 100; i++) {
-        //     stringJedisTemplate.hPut("alipay", RandomStringUtils.number(5), DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        // }
-
-        Map<Object, Object> hash = stringJedisTemplate.hGetAll("alipay");
-
-        hash.forEach((key, value) -> {
-            System.err.println(key + ": " + value);
-            String k = (String) key;
-            int kInt = Integer.valueOf(k);
-            if (kInt % 2 == 0) {
-                stringJedisTemplate.hDelete("alipay", key);
-            }
-        });
-
-
+        System.err.println(stringJedisTemplate.get("hhh"));
     }
 
 }

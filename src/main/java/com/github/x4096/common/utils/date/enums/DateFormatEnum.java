@@ -16,7 +16,6 @@ public enum DateFormatEnum {
     YEAR_MONTH_DAY_12("yyyy-MM-dd hh:mm:ss"),
     YEAR_MONTH_DAY_24("yyyy-MM-dd HH:mm:ss"),
 
-
     ;
 
     private final String format;

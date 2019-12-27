@@ -105,7 +105,7 @@ public class HttpSyncClientUtils {
      * @param httpSyncConfig
      */
     public static void init(HttpSyncConfig httpSyncConfig, boolean isPrintRequestLog, boolean isPrintResponseLog) {
-        LOGGER.info("BQHttpClient 初始化: {}, 是否打印请求日志: {}, 是否打印响应日志: {}", httpSyncConfig.toString(), isPrintRequestLog, isPrintResponseLog);
+        LOGGER.info("HttpClient 初始化: {}, 是否打印请求日志: {}, 是否打印响应日志: {}", httpSyncConfig.toString(), isPrintRequestLog, isPrintResponseLog);
         HttpSyncClientUtils.isPrintRequestLog = isPrintRequestLog;
         HttpSyncClientUtils.isPrintResponseLog = isPrintResponseLog;
         SSLContext sslcontext;
@@ -159,7 +159,7 @@ public class HttpSyncClientUtils {
         } catch (IOException e) {
             LOGGER.error("HttpClient 关闭异常", e);
         }
-        LOGGER.info("BQHttpClient 关闭");
+        LOGGER.info("HttpClient 关闭");
     }
 
 

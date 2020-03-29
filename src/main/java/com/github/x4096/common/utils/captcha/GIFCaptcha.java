@@ -17,7 +17,7 @@ import java.io.OutputStream;
  */
 public class GIFCaptcha extends Captcha {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GIFCaptcha.class);
+    private static final Logger logger = LoggerFactory.getLogger(GIFCaptcha.class);
 
     public GIFCaptcha() {
     }
@@ -77,7 +77,7 @@ public class GIFCaptcha extends Captcha {
             try {
                 os.close();
             } catch (IOException e) {
-                LOGGER.error("输出流关闭异常", e);
+                logger.error("输出流关闭异常", e);
             }
         }
     }

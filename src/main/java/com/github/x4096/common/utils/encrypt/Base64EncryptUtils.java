@@ -19,7 +19,7 @@ public class Base64EncryptUtils {
     private Base64EncryptUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Base64EncryptUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(Base64EncryptUtils.class);
 
     private static final String DEFAULT_CHARSET = CharsetConstants.UTF_8;
 
@@ -37,7 +37,7 @@ public class Base64EncryptUtils {
         try {
             textByte = content.getBytes(DEFAULT_CHARSET);
         } catch (UnsupportedEncodingException e) {
-            LOGGER.error("不支持的编码集", e);
+            logger.error("不支持的编码集", e);
         }
         return base64.encodeToString(textByte);
     }
@@ -55,7 +55,7 @@ public class Base64EncryptUtils {
         try {
             return new String(base64.decode(content), DEFAULT_CHARSET);
         } catch (UnsupportedEncodingException e) {
-            LOGGER.error("不支持的编码集", e);
+            logger.error("不支持的编码集", e);
         }
         return null;
     }

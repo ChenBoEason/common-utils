@@ -22,7 +22,7 @@ public class DESEncryptUtils {
     private DESEncryptUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DESEncryptUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(DESEncryptUtils.class);
 
     /**
      * 加密算法DES
@@ -65,7 +65,7 @@ public class DESEncryptUtils {
             cipher.init(Cipher.ENCRYPT_MODE, securekey, secureRandom);
             return Base64.encodeBase64String(cipher.doFinal(content.getBytes(DEFAULT_ENCODING)));
         } catch (Exception e) {
-            LOGGER.error("加密异常, 加密前内容: {}, 加密key: {}", content, encryptKey, e);
+            logger.error("加密异常, 加密前内容: {}, 加密key: {}", content, encryptKey, e);
         }
         return null;
     }
@@ -88,19 +88,9 @@ public class DESEncryptUtils {
             decodeBuffer = cipher.doFinal(decodeBuffer);
             return new String(decodeBuffer, DEFAULT_ENCODING);
         } catch (Exception e) {
-            LOGGER.error("解密异常, 解密前内容: {}, 解密key: {}", content, decryptKey, e);
+            logger.error("解密异常, 解密前内容: {}, 解密key: {}", content, decryptKey, e);
         }
         return null;
-    }
-
-
-    public static void main(String[] args) {
-
-        String encrypt = encrypt("hhhh", KEY);
-
-        System.out.println(encrypt);
-
-
     }
 
 }

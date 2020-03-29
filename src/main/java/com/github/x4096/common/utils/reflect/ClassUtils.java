@@ -24,7 +24,7 @@ import static io.lettuce.core.internal.LettuceClassUtils.CGLIB_CLASS_SEPARATOR;
  */
 public class ClassUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClassUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassUtils.class);
 
     /**
      * 系统启动,WEB-INF/classes路径=
@@ -121,7 +121,7 @@ public class ClassUtils {
                                             // 添加到classes
                                             classes.add(Class.forName(packageName + '.' + className));
                                         } catch (ClassNotFoundException e) {
-                                            LOGGER.error("添加用户自定义视图类错误 找不到此类的.class文件");
+                                            logger.error("添加用户自定义视图类错误 找不到此类的.class文件");
                                             e.printStackTrace();
                                         }
                                     }
@@ -129,12 +129,12 @@ public class ClassUtils {
                             }
                         }
                     } catch (IOException e) {
-                        LOGGER.error("在扫描用户定义视图时从jar包获取文件出错", e);
+                        logger.error("在扫描用户定义视图时从jar包获取文件出错", e);
                     }
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("IO异常", e);
+            logger.error("IO异常", e);
         }
 
         return classes;
@@ -153,7 +153,7 @@ public class ClassUtils {
         File dir = new File(packagePath);
         // 如果不存在或者 也不是目录就直接返回
         if (!dir.exists() || !dir.isDirectory()) {
-            LOGGER.warn("用户定义包名 " + packageName + " 下没有任何文件");
+            logger.warn("用户定义包名 " + packageName + " 下没有任何文件");
             return;
         }
         // 如果存在 就获取包下的所有文件 包括目录
@@ -180,7 +180,7 @@ public class ClassUtils {
                     // 添加到集合中去
                     classes.add(Class.forName(packageName + '.' + className));
                 } catch (ClassNotFoundException e) {
-                    LOGGER.error("添加用户自定义视图类错误 找不到此类的.class文件", e);
+                    logger.error("添加用户自定义视图类错误 找不到此类的.class文件", e);
                 }
             }
         }

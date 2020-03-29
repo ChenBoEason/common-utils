@@ -62,7 +62,7 @@ public class HttpSyncClientUtils {
     private HttpSyncClientUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpSyncClientUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpSyncClientUtils.class);
 
     private static final String DEFAULT_CHARSET = CharsetConstants.UTF_8;
 
@@ -105,7 +105,7 @@ public class HttpSyncClientUtils {
      * @param httpSyncConfig
      */
     public static void init(HttpSyncConfig httpSyncConfig, boolean isPrintRequestLog, boolean isPrintResponseLog) {
-        LOGGER.info("HttpClient 初始化: {}, 是否打印请求日志: {}, 是否打印响应日志: {}", httpSyncConfig.toString(), isPrintRequestLog, isPrintResponseLog);
+        logger.info("HttpClient 初始化: {}, 是否打印请求日志: {}, 是否打印响应日志: {}", httpSyncConfig.toString(), isPrintRequestLog, isPrintResponseLog);
         HttpSyncClientUtils.isPrintRequestLog = isPrintRequestLog;
         HttpSyncClientUtils.isPrintResponseLog = isPrintResponseLog;
         SSLContext sslcontext;
@@ -115,7 +115,7 @@ public class HttpSyncClientUtils {
                     .loadTrustMaterial(null, new TrustSelfSignedStrategy())
                     .build();
         } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-            LOGGER.error("HttpSyncClientUtils 初始化异常", e);
+            logger.error("HttpSyncClientUtils 初始化异常", e);
             throw new RuntimeException(e);
         }
 
@@ -143,7 +143,7 @@ public class HttpSyncClientUtils {
                 .setConnectionManagerShared(true).build();
 
         if (null != poolConnManager && null != poolConnManager.getTotalStats()) {
-            LOGGER.info("now http pool " + poolConnManager.getTotalStats().toString());
+            logger.info("now http pool " + poolConnManager.getTotalStats().toString());
         }
         closeableHttpClient = httpClient;
     }
@@ -157,9 +157,9 @@ public class HttpSyncClientUtils {
         try {
             closeableHttpClient.close();
         } catch (IOException e) {
-            LOGGER.error("HttpClient 关闭异常", e);
+            logger.error("HttpClient 关闭异常", e);
         }
-        LOGGER.info("HttpClient 关闭");
+        logger.info("HttpClient 关闭");
     }
 
 
@@ -232,7 +232,7 @@ public class HttpSyncClientUtils {
      */
     public static HttpResponse post(String requestUrl, String requestContent, Map<String, String> requestHeader, HttpContentTypeEnum httpContentTypeEnum) {
         if (isPrintRequestLog) {
-            LOGGER.info("POST请求入参: requestUrl: {}, requestContent: {}, requestHeader: {}", requestUrl, requestContent, JSON.toJSONString(requestHeader));
+            logger.info("POST请求入参: requestUrl: {}, requestContent: {}, requestHeader: {}", requestUrl, requestContent, JSON.toJSONString(requestHeader));
         }
 
         Preconditions.checkArgument(StringUtils.isNotBlank(requestUrl), "requestUrl不能为空");
@@ -313,7 +313,7 @@ public class HttpSyncClientUtils {
      */
     public static HttpResponse post(String requestUrl, Map<String, Object> requestParams, Map<String, String> requestHeader, String httpContentType) {
         if (isPrintRequestLog) {
-            LOGGER.info("POST请求入参: requestUrl: {}, requestParams: {}, requestHeader: {}, httpContentType: {}", requestUrl, JSON.toJSONString(requestParams), JSON.toJSONString(requestHeader), httpContentType);
+            logger.info("POST请求入参: requestUrl: {}, requestParams: {}, requestHeader: {}, httpContentType: {}", requestUrl, JSON.toJSONString(requestParams), JSON.toJSONString(requestHeader), httpContentType);
         }
 
         if (StringUtils.isBlank(requestUrl)) {
@@ -343,7 +343,7 @@ public class HttpSyncClientUtils {
                 urlEncodedFormEntity.setContentType(httpContentType);
                 httpPost.setEntity(urlEncodedFormEntity);
             } catch (UnsupportedEncodingException e) {
-                LOGGER.error("POST 请求异常", e);
+                logger.error("POST 请求异常", e);
                 throw new RuntimeException(e);
             }
         } else {
@@ -415,7 +415,7 @@ public class HttpSyncClientUtils {
      */
     public static HttpResponse get(String requestUrl, String urlParams, Map<String, String> requestHeader) {
         if (isPrintRequestLog) {
-            LOGGER.info("GET请求入参: requestUrl: {}, urlParams: {}, requestHeader: {}", requestUrl, urlParams, JSON.toJSONString(requestHeader));
+            logger.info("GET请求入参: requestUrl: {}, urlParams: {}, requestHeader: {}", requestUrl, urlParams, JSON.toJSONString(requestHeader));
         }
         if (StringUtils.isBlank(requestUrl)) {
             throw new NullPointerException("requestUrl不能为空");
@@ -427,14 +427,14 @@ public class HttpSyncClientUtils {
             try {
                 httpGet.setURI(new URI(httpGet.getURI().toString() + "?" + urlParams));
             } catch (URISyntaxException e) {
-                LOGGER.error("GET 请求URI异常: ", e);
+                logger.error("GET 请求URI异常: ", e);
                 throw new RuntimeException(e);
             }
         } else {
             try {
                 httpGet.setURI(new URI(httpGet.getURI().toString()));
             } catch (URISyntaxException e) {
-                LOGGER.error("GET 请求URI异常: ", e);
+                logger.error("GET 请求URI异常: ", e);
                 throw new RuntimeException(e);
             }
         }
@@ -470,7 +470,7 @@ public class HttpSyncClientUtils {
      */
     private static HttpResponse get(String requestUrl, List<BasicNameValuePair> paramsList, Map<String, String> requestHeader) {
         if (isPrintRequestLog) {
-            LOGGER.info("GET请求入参: requestUrl: {}, paramsList: {}, requestHeader: {}", requestUrl, JSON.toJSONString(paramsList), JSON.toJSONString(requestHeader));
+            logger.info("GET请求入参: requestUrl: {}, paramsList: {}, requestHeader: {}", requestUrl, JSON.toJSONString(paramsList), JSON.toJSONString(requestHeader));
         }
 
         if (StringUtils.isBlank(requestUrl)) {
@@ -488,21 +488,21 @@ public class HttpSyncClientUtils {
             try {
                 getUrl = EntityUtils.toString(new UrlEncodedFormEntity(paramsList));
             } catch (IOException e) {
-                LOGGER.error("GET 请求异常: ", e);
+                logger.error("GET 请求异常: ", e);
                 throw new RuntimeException(e);
             }
 
             try {
                 httpGet.setURI(new URI(httpGet.getURI().toString() + "?" + getUrl));
             } catch (URISyntaxException e) {
-                LOGGER.error("GET 请求URI异常： ", e);
+                logger.error("GET 请求URI异常： ", e);
                 throw new RuntimeException(e);
             }
         } else {
             try {
                 httpGet.setURI(new URI(httpGet.getURI().toString()));
             } catch (URISyntaxException e) {
-                LOGGER.error("GET 请求URI异常： ", e);
+                logger.error("GET 请求URI异常： ", e);
                 throw new RuntimeException(e);
             }
         }
@@ -523,7 +523,7 @@ public class HttpSyncClientUtils {
         CloseableHttpResponse response = null;
 
         /* 返回信息封装 */
-        HttpResponse bqHttpResponse = new HttpResponse();
+        HttpResponse httpResponse = new HttpResponse();
         String result = null;
         try {
             response = httpClient.execute(httpUriRequest);
@@ -531,14 +531,14 @@ public class HttpSyncClientUtils {
             if (entity != null) {
                 result = EntityUtils.toString(entity, DEFAULT_CHARSET);
                 if (null != entity.getContentType()) {
-                    bqHttpResponse.setContentType(entity.getContentType().getValue());
+                    httpResponse.setContentType(entity.getContentType().getValue());
                 }
             }
 
-            bqHttpResponse.setProtocol(response.getProtocolVersion().toString());
-            bqHttpResponse.setStatusCode(response.getStatusLine().getStatusCode());
-            bqHttpResponse.setReasonPhrase(response.getStatusLine().getReasonPhrase());
-            bqHttpResponse.setBody(result);
+            httpResponse.setProtocol(response.getProtocolVersion().toString());
+            httpResponse.setStatusCode(response.getStatusLine().getStatusCode());
+            httpResponse.setReasonPhrase(response.getStatusLine().getReasonPhrase());
+            httpResponse.setBody(result);
 
             Header[] headers = response.getAllHeaders();
             if (headers != null && headers.length > 0) {
@@ -546,33 +546,33 @@ public class HttpSyncClientUtils {
                 for (Header header : headers) {
                     headerMap.put(header.getName(), header.getValue());
                 }
-                bqHttpResponse.setHeaders(headerMap);
+                httpResponse.setHeaders(headerMap);
             }
 
             /* 关闭流操作 */
             EntityUtils.consume(entity);
         } catch (IOException e) {
-            bqHttpResponse.setStatusCode(-1);
-            bqHttpResponse.setReasonPhrase(e.getMessage());
-            LOGGER.error(httpUriRequest.getMethod() + " 请求异常: ", e);
+            httpResponse.setStatusCode(-1);
+            httpResponse.setReasonPhrase(e.getMessage());
+            logger.error(httpUriRequest.getMethod() + " 请求异常: ", e);
         } finally {
             if (response != null) {
                 try {
                     response.close();
                 } catch (IOException e) {
-                    LOGGER.error(httpUriRequest.getMethod() + " 请求关闭异常: ", e);
+                    logger.error(httpUriRequest.getMethod() + " 请求关闭异常: ", e);
                 }
             }
             try {
                 httpClient.close();
             } catch (IOException e) {
-                LOGGER.error("HTTPClient 关闭异常", e);
+                logger.error("HTTPClient 关闭异常", e);
             }
         }
         if (isPrintResponseLog) {
-            LOGGER.info("HTTP 响应: " + bqHttpResponse.toString());
+            logger.info("HTTP 响应: " + httpResponse.toString());
         }
-        return bqHttpResponse;
+        return httpResponse;
     }
 
     /**
@@ -587,10 +587,15 @@ public class HttpSyncClientUtils {
         }
     }
 
-
-    public static CloseableHttpClient getCloseableHttpClient() {
+    private static CloseableHttpClient getCloseableHttpClient() {
+        if (null == closeableHttpClient) {
+            synchronized (HttpSyncClientUtils.class) {
+                if (null == closeableHttpClient) {
+                    init();
+                }
+            }
+        }
         return closeableHttpClient;
     }
-
 
 }

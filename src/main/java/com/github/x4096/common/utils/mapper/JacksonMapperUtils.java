@@ -30,7 +30,7 @@ public class JacksonMapperUtils {
     private JacksonMapperUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JacksonMapperUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(JacksonMapperUtils.class);
     private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -107,7 +107,7 @@ public class JacksonMapperUtils {
                 return MAPPER.readValue(jsonString, clazz);
             }
         } catch (IOException e) {
-            LOGGER.error("解析json异常,请求入参: " + jsonString, e);
+            logger.error("解析json异常,请求入参: " + jsonString, e);
             return null;
         }
     }
@@ -121,7 +121,7 @@ public class JacksonMapperUtils {
         try {
             return objectMapper.writeValueAsString(t);
         } catch (JsonProcessingException e) {
-            LOGGER.error("json转换异常", e);
+            logger.error("json转换异常", e);
             return null;
         }
     }
@@ -143,7 +143,7 @@ public class JacksonMapperUtils {
         try {
             return src instanceof String ? (String) src : DEFAULT_MAPPER.writeValueAsString(src);
         } catch (Exception e) {
-            LOGGER.error("Parse Object to String error src=" + src, e);
+            logger.error("Parse Object to String error src=" + src, e);
             return null;
         }
     }
@@ -156,7 +156,7 @@ public class JacksonMapperUtils {
         try {
             return src instanceof byte[] ? (byte[]) src : DEFAULT_MAPPER.writeValueAsBytes(src);
         } catch (Exception e) {
-            LOGGER.error("Parse Object to byte[] error", e);
+            logger.error("Parse Object to byte[] error", e);
             return null;
         }
     }
@@ -169,7 +169,7 @@ public class JacksonMapperUtils {
         try {
             return clazz.equals(String.class) ? (T) str : DEFAULT_MAPPER.readValue(str, clazz);
         } catch (Exception e) {
-            LOGGER.error("Parse String to Object error\nString: {}\nClass<T>: {}\nError: {}", str, clazz.getName(), e);
+            logger.error("Parse String to Object error\nString: {}\nClass<T>: {}\nError: {}", str, clazz.getName(), e);
             return null;
         }
     }
@@ -181,7 +181,7 @@ public class JacksonMapperUtils {
         try {
             return clazz.equals(byte[].class) ? (T) bytes : DEFAULT_MAPPER.readValue(bytes, clazz);
         } catch (Exception e) {
-            LOGGER.error("Parse byte[] to Object error\nbyte[]: {}\nClass<T>: {}\nError: {}", bytes, clazz.getName(), e);
+            logger.error("Parse byte[] to Object error\nbyte[]: {}\nClass<T>: {}\nError: {}", bytes, clazz.getName(), e);
             return null;
         }
     }
@@ -194,7 +194,7 @@ public class JacksonMapperUtils {
         try {
             return (T) (typeReference.getType().equals(String.class) ? str : DEFAULT_MAPPER.readValue(str, typeReference));
         } catch (Exception e) {
-            LOGGER.error("Parse String to Object error\nString: {}\nTypeReference<T>: {}\nError: {}", str,
+            logger.error("Parse String to Object error\nString: {}\nTypeReference<T>: {}\nError: {}", str,
                     typeReference.getType(), e);
             return null;
         }
@@ -208,7 +208,7 @@ public class JacksonMapperUtils {
             return (T) (typeReference.getType().equals(byte[].class) ? bytes : DEFAULT_MAPPER.readValue(bytes,
                     typeReference));
         } catch (Exception e) {
-            LOGGER.error("Parse byte[] to Object error\nbyte[]: {}\nTypeReference<T>: {}\nError: {}", bytes,
+            logger.error("Parse byte[] to Object error\nbyte[]: {}\nTypeReference<T>: {}\nError: {}", bytes,
                     typeReference.getType(), e);
             return null;
         }

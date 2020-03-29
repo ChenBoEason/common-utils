@@ -31,7 +31,7 @@ public class TransFormUtils {
     private TransFormUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransFormUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(TransFormUtils.class);
 
     private static XmlMapper xmlMapper = new XmlMapper();
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -48,7 +48,7 @@ public class TransFormUtils {
         try {
             map = BeanUtils.describe(bean);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            LOGGER.error("", e);
+            logger.error("", e);
             return null;
         }
         map.remove("class");
@@ -70,7 +70,7 @@ public class TransFormUtils {
             bean = clazz.newInstance();
             BeanUtils.populate(bean, map);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            LOGGER.error("", e);
+            logger.error("", e);
         }
         return bean;
     }
@@ -83,7 +83,7 @@ public class TransFormUtils {
         try {
             str = objectMapper.writeValueAsString(bean);
         } catch (JsonProcessingException e) {
-            LOGGER.error("", e);
+            logger.error("", e);
         }
         return str;
     }
@@ -99,7 +99,7 @@ public class TransFormUtils {
             bean = clazz.newInstance();
             bean = objectMapper.readValue(json, clazz);
         } catch (InstantiationException | IllegalAccessException | IOException e) {
-            LOGGER.error("", e);
+            logger.error("", e);
         }
         return bean;
     }
@@ -119,7 +119,7 @@ public class TransFormUtils {
             jsonParser.close();
             jsonGenerator.close();
         } catch (Exception e) {
-            LOGGER.error("", e);
+            logger.error("", e);
         }
 
         return stringWriter.toString();
@@ -134,7 +134,7 @@ public class TransFormUtils {
             String xml = xmlMapper.writeValueAsString(root);
             return xml;
         } catch (IOException e) {
-            LOGGER.error("", e);
+            logger.error("", e);
         }
         return null;
     }

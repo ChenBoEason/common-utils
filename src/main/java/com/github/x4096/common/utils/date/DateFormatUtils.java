@@ -20,7 +20,7 @@ public class DateFormatUtils {
     private DateFormatUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DateFormatUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(DateFormatUtils.class);
 
     /**
      * 格式化日期的标准字符串 更多查看 {@link DateFormatEnum}
@@ -62,7 +62,7 @@ public class DateFormatUtils {
         try {
             return FastDateFormat.getInstance(pattern).parse(dateString);
         } catch (ParseException e) {
-            LOGGER.error("时间解析异常, 请求入参: pattern: {}, dateString: {}", pattern, dateString, e);
+            logger.error("时间解析异常, 请求入参: pattern: {}, dateString: {}", pattern, dateString, e);
             return null;
         }
     }

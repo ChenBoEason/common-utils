@@ -23,7 +23,7 @@ public class RSAEncryptUtils {
     private RSAEncryptUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RSAEncryptUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(RSAEncryptUtils.class);
 
     private static final int KEY_SIZE_1024 = 1024;
 
@@ -145,7 +145,7 @@ public class RSAEncryptUtils {
         try {
             return keyFactory.generatePublic(keySpec);
         } catch (InvalidKeySpecException e) {
-            LOGGER.error("", e);
+            logger.error("", e);
         }
         return null;
     }
@@ -163,7 +163,7 @@ public class RSAEncryptUtils {
         try {
             return keyFactory.generatePrivate(keySpec);
         } catch (InvalidKeySpecException e) {
-            LOGGER.error("", e);
+            logger.error("", e);
         }
         return null;
     }
@@ -177,7 +177,7 @@ public class RSAEncryptUtils {
         try {
             keyFactory = KeyFactory.getInstance("RSA");
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("", e);
+            logger.error("", e);
         }
         return keyFactory;
     }
@@ -198,7 +198,7 @@ public class RSAEncryptUtils {
             signature.update(content.getBytes(CHAR_ENCODING));
             return new String(Base64.encodeBase64(signature.sign()));
         } catch (NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException | SignatureException e) {
-            LOGGER.error("RSA 获取签名异常, 待签名内容content: {}, 私钥privateKey: {}", content, privateKey, e);
+            logger.error("RSA 获取签名异常, 待签名内容content: {}, 私钥privateKey: {}", content, privateKey, e);
         }
         return null;
     }
@@ -220,7 +220,7 @@ public class RSAEncryptUtils {
             signature.update(content.getBytes(CHAR_ENCODING));
             return signature.verify(Base64.decodeBase64(sign.getBytes()));
         } catch (NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException | SignatureException e) {
-            LOGGER.error("RSA 校验签名异常, 待签名内容content: {}, 签名内容sign: {}, 公钥privateKey: {}", content, sign, publicKey, e);
+            logger.error("RSA 校验签名异常, 待签名内容content: {}, 签名内容sign: {}, 公钥privateKey: {}", content, sign, publicKey, e);
         }
         return false;
     }
@@ -239,7 +239,7 @@ public class RSAEncryptUtils {
         try {
             keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("不支持的算法", e);
+            logger.error("不支持的算法", e);
         }
         keyPairGenerator.initialize(length, secureRandom);
         return keyPairGenerator.generateKeyPair();
@@ -256,7 +256,7 @@ public class RSAEncryptUtils {
         try {
             return new String(Base64.encodeBase64(bytes), CHAR_ENCODING);
         } catch (UnsupportedEncodingException e) {
-            LOGGER.error("", e);
+            logger.error("", e);
         }
         return null;
     }
@@ -286,7 +286,7 @@ public class RSAEncryptUtils {
             byte[] bytes = cipher.doFinal(content.getBytes());
             return new String(Base64.encodeBase64(bytes), CHAR_ENCODING);
         } catch (Exception e) {
-            LOGGER.error("RSA加密失败,加密内容: {}, 加密key: {}", content, encryptKey);
+            logger.error("RSA加密失败,加密内容: {}, 加密key: {}", content, encryptKey);
         }
         return null;
     }
@@ -316,7 +316,7 @@ public class RSAEncryptUtils {
             byte[] bytes = cipher.doFinal(Base64.decodeBase64(cryptograph.getBytes()));
             return new String(bytes, CHAR_ENCODING);
         } catch (Exception e) {
-            LOGGER.error("RSA解密失败,密文: {}, 解密key: {}", cryptograph, decryptKey, e);
+            logger.error("RSA解密失败,密文: {}, 解密key: {}", cryptograph, decryptKey, e);
         }
         return null;
     }

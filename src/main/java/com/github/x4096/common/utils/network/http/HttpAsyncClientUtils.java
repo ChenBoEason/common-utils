@@ -64,7 +64,7 @@ import java.util.Map;
  */
 public class HttpAsyncClientUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpAsyncClientUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpAsyncClientUtils.class);
 
 
     private static final String DEFAULT_CHARSET = CharsetConstants.UTF_8;
@@ -97,7 +97,7 @@ public class HttpAsyncClientUtils {
                     new TrustSelfSignedStrategy())
                     .build();
         } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-            LOGGER.error("HttpSyncClientUtils 初始化异常", e);
+            logger.error("HttpSyncClientUtils 初始化异常", e);
         }
 
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
@@ -128,7 +128,7 @@ public class HttpAsyncClientUtils {
         try {
             ioReactor = new DefaultConnectingIOReactor(ioReactorConfig);
         } catch (IOReactorException e) {
-            LOGGER.error("HttpAsyncClientUtils 初始化异常", e);
+            logger.error("HttpAsyncClientUtils 初始化异常", e);
         }
 
         poolingNHttpClientConnectionManager = new PoolingNHttpClientConnectionManager(
@@ -185,7 +185,7 @@ public class HttpAsyncClientUtils {
         try {
             closeableHttpAsyncClient.close();
         } catch (IOException e) {
-            LOGGER.error("关闭 HttpAsyncClientUtils 资源异常", e);
+            logger.error("关闭 HttpAsyncClientUtils 资源异常", e);
         }
     }
 
@@ -365,7 +365,7 @@ public class HttpAsyncClientUtils {
             try {
                 entity = new UrlEncodedFormEntity(postBody, DEFAULT_CHARSET);
             } catch (UnsupportedEncodingException e) {
-                LOGGER.error("构建 HttpPost 异常", e);
+                logger.error("构建 HttpPost 异常", e);
             }
             httpPost.setEntity(entity);
         }
@@ -404,7 +404,7 @@ public class HttpAsyncClientUtils {
             try {
                 httpGet.setURI(new URI(httpGet.getURI().toString() + "?" + urlParams));
             } catch (URISyntaxException e) {
-                LOGGER.error("构建 HttpGet 异常", e);
+                logger.error("构建 HttpGet 异常", e);
             }
         }
 

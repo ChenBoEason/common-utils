@@ -19,7 +19,7 @@ public class IPUtils {
     private IPUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IPUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(IPUtils.class);
 
     private static final String LOCAL_HOST_V4 = "127.0.0.1";
 
@@ -56,7 +56,7 @@ public class IPUtils {
                 try {
                     inet = InetAddress.getLocalHost();
                 } catch (UnknownHostException e) {
-                    LOGGER.error("", e);
+                    logger.error("", e);
                     return null;
                 }
                 ipAddress = inet.getHostAddress();
@@ -112,7 +112,7 @@ public class IPUtils {
             }
             return jdkSuppliedAddress.getHostAddress();
         } catch (Exception e) {
-            LOGGER.error("", e);
+            logger.error("", e);
         }
         return null;
     }
@@ -129,6 +129,5 @@ public class IPUtils {
             throw new RuntimeException(ex);
         }
     }
-
 
 }

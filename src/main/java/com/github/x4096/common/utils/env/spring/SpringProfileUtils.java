@@ -8,9 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Author: 0x4096.peng@gmail.com
@@ -23,14 +21,14 @@ public class SpringProfileUtils implements InitializingBean, ApplicationContextA
 
     private static ApplicationContext context;
 
-    private static List<String> profileList;
+    private static Set<String> profileSet;
 
 
     /**
      * 获取当前环境参数  exp: dev,prod,test
      */
-    public static List<String> getActiveProfiles() {
-        return profileList;
+    public static Set<String> getActiveProfiles() {
+        return profileSet;
     }
 
 
@@ -40,7 +38,7 @@ public class SpringProfileUtils implements InitializingBean, ApplicationContextA
      * @param profile 运行环境, exp: test,pro
      */
     public static boolean contain(String profile) {
-        return StringUtils.isNotBlank(profile) && profileList.contains(profile);
+        return StringUtils.isNotBlank(profile) && profile.contains(profile);
     }
 
 
@@ -54,9 +52,9 @@ public class SpringProfileUtils implements InitializingBean, ApplicationContextA
     public void afterPropertiesSet() throws Exception {
         String[] profiles = context.getEnvironment().getActiveProfiles();
         if (ArrayUtils.isEmpty(profiles)) {
-            profileList = new ArrayList<>();
+            profileSet = new HashSet<>();
         } else {
-            profileList = Arrays.asList(profiles);
+            profileSet = new HashSet<>(Arrays.asList(profiles));
         }
     }
 

@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class OkHttpClientUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OkHttpClientUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(OkHttpClientUtils.class);
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -107,7 +107,7 @@ public class OkHttpClientUtils {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
 
-                LOGGER.warn("OkAsyncPost回调:" + response.body().string());
+                logger.warn("OkAsyncPost回调:" + response.body().string());
             }
         });
 
@@ -152,7 +152,7 @@ public class OkHttpClientUtils {
             response = okClient.newCall(request).execute();
             response.body().string();
         } catch (IOException e) {
-            LOGGER.error("同步 GET 请求异常", e);
+            logger.error("同步 GET 请求异常", e);
         }finally {
             if(response != null){
                 response.close();

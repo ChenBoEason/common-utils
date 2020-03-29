@@ -18,7 +18,7 @@ import java.net.URLEncoder;
  */
 public class EscapeUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EscapeUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(EscapeUtils.class);
 
     /**
      * URL 编码 默认字符集编码 UTF-8
@@ -81,14 +81,14 @@ public class EscapeUtils {
             try {
                 return URLEncoder.encode(url, CharsetConstants.UTF_8);
             } catch (UnsupportedEncodingException e) {
-                LOGGER.error("url编码异常,请求入参: " + url, e);
+                logger.error("url编码异常,请求入参: " + url, e);
                 return null;
             }
         }
         try {
             return URLDecoder.decode(url, CharsetConstants.UTF_8);
         } catch (UnsupportedEncodingException e) {
-            LOGGER.error("url解密异常,请求入参: " + url, e);
+            logger.error("url解密异常,请求入参: " + url, e);
             return null;
         }
     }

@@ -21,7 +21,7 @@ public class MoneyUtils {
     private MoneyUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MoneyUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(MoneyUtils.class);
 
     /**
      * 元转分
@@ -80,7 +80,7 @@ public class MoneyUtils {
         try {
             number = format.parse(yuan);
         } catch (ParseException e) {
-            LOGGER.error("元转分,转换异常,转换内容: {}", yuan, e);
+            logger.error("元转分,转换异常,转换内容: {}", yuan, e);
             throw new RuntimeException("元转分,转换异常,转换内容: " + yuan);
         }
 

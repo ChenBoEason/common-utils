@@ -17,7 +17,7 @@ import java.io.OutputStream;
  */
 public class JPGCaptcha extends Captcha {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JPGCaptcha.class);
+    private static final Logger logger = LoggerFactory.getLogger(JPGCaptcha.class);
 
 
     public JPGCaptcha() {
@@ -85,12 +85,12 @@ public class JPGCaptcha extends Captcha {
             ImageIO.write(image, "JPG", outputStream);
             outputStream.flush();
         } catch (IOException e) {
-            LOGGER.error("JPG 验证码生成异常", e);
+            logger.error("JPG 验证码生成异常", e);
         } finally {
             try {
                 outputStream.close();
             } catch (IOException e) {
-                LOGGER.error("输出流关闭异常", e);
+                logger.error("输出流关闭异常", e);
             }
         }
     }

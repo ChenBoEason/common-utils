@@ -17,7 +17,7 @@ public class PortUtils {
     private PortUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PortUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(PortUtils.class);
 
     /**
      * 检测指定host的指定端口是否能连接,默认连接超时时间2秒
@@ -44,12 +44,12 @@ public class PortUtils {
             connect.connect(new InetSocketAddress(host, port), timeout);
             return connect.isConnected();
         } catch (IOException e) {
-            LOGGER.error("Socket 连接异常", e);
+            logger.error("Socket 连接异常", e);
         } finally {
             try {
                 connect.close();
             } catch (IOException e) {
-                LOGGER.error("Socket 关闭异常", e);
+                logger.error("Socket 关闭异常", e);
             }
         }
         return false;

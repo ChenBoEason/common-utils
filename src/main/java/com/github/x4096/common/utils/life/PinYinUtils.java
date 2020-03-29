@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
  * @Description: 中国汉字拼音工具类
  * 部分参考: https://github.com/0opslab/opslabJutil/blob/master/src/main/java/com/opslab/util/ChinesUtil.java
  */
-public class ChinesePinYinUtils {
+public class PinYinUtils {
 
-    private ChinesePinYinUtils() {
+    private PinYinUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChinesePinYinUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(PinYinUtils.class);
 
     /**
      * 中文Unicode范围
@@ -58,7 +58,7 @@ public class ChinesePinYinUtils {
                 }
             }
         } catch (BadHanyuPinyinOutputFormatCombination e) {
-            LOGGER.error("获取拼音异常,请求入参: {}", inputString, e);
+            logger.error("获取拼音异常,请求入参: {}", inputString, e);
         }
         return output.toString();
     }
@@ -87,7 +87,7 @@ public class ChinesePinYinUtils {
                         pybf.append(temp[0].charAt(0));
                     }
                 } catch (BadHanyuPinyinOutputFormatCombination e) {
-                    LOGGER.error("", e);
+                    logger.error("", e);
                 }
             } else {
                 pybf.append(c);

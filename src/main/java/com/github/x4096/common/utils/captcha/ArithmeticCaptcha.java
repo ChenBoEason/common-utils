@@ -21,7 +21,7 @@ import java.util.Random;
  */
 public class ArithmeticCaptcha extends Captcha {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ArithmeticCaptcha.class);
+    private static final Logger logger = LoggerFactory.getLogger(ArithmeticCaptcha.class);
 
     /**
      * 算法表达式
@@ -98,12 +98,12 @@ public class ArithmeticCaptcha extends Captcha {
             ImageIO.write(image, "JPG", outputStream);
             outputStream.flush();
         } catch (IOException e) {
-            LOGGER.error("数字表达式验证码输出流异常", e);
+            logger.error("数字表达式验证码输出流异常", e);
         } finally {
             try {
                 outputStream.close();
             } catch (IOException e) {
-                LOGGER.error("数字表达式输出流关闭异常", e);
+                logger.error("数字表达式输出流关闭异常", e);
             }
 
         }
@@ -123,7 +123,7 @@ public class ArithmeticCaptcha extends Captcha {
         try {
             return (Integer) engine.eval(exp);
         } catch (ScriptException e) {
-            LOGGER.error("Script 异常", e);
+            logger.error("Script 异常", e);
         }
         return -1;
     }

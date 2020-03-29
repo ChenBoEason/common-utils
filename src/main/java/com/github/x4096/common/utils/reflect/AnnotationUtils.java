@@ -16,7 +16,7 @@ import java.util.*;
  */
 public class AnnotationUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnnotationUtils.class);
 
     /**
      * 递归Class所有的Annotation，一个最彻底的实现.

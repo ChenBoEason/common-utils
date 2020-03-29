@@ -11,16 +11,16 @@ import java.nio.charset.StandardCharsets;
  * @Author: 0x4096.peng@gmail.com
  * @Project: common-utils
  * @DateTime: 2019-11-29 23:15
- * @Description: HMAC 签名工具类
+ * @Description: 签名工具类
  */
-public class HMACSignatureUtils {
+public class SignatureUtils {
 
-    private HMACSignatureUtils() {
+    private SignatureUtils() {
     }
 
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 
-    private static final char[] Digit = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    private static char[] Digit = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 
     /**
@@ -33,6 +33,7 @@ public class HMACSignatureUtils {
     public static String HMACSHA1(String content, String secretKey) {
         Preconditions.checkNotNull(content, "content 不能为 null");
         Preconditions.checkNotNull(secretKey, "secretKey 不能为 null");
+
         byte[] secretKeyBytes = secretKey.getBytes();
         SecretKey secretKeyObj = new SecretKeySpec(secretKeyBytes, HMAC_SHA1_ALGORITHM);
 

@@ -313,7 +313,7 @@ public class ValidateUtils {
         if (StringUtils.isBlank(datetime)) {
             return false;
         }
-        Preconditions.checkNotNull(dateFormatEnum, "BQDateFormatEnum 不能为null");
+        Preconditions.checkNotNull(dateFormatEnum, "DateFormatEnum 不能为null");
         switch (dateFormatEnum) {
             case YEAR_MONTH_DAY:
                 return REGEX_YEAR_MONTH_DAY_PATTERN.matcher(datetime).matches();

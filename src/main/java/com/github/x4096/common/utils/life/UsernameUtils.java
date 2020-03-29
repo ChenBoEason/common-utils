@@ -8,9 +8,9 @@ import java.util.Random;
  * @DateTime: 2019-10-12 23:43
  * @Description: 参考来源: https://www.jianshu.com/p/cc8d567ebda5
  */
-public class ChineseNameUtils {
+public class UsernameUtils {
 
-    private ChineseNameUtils() {
+    private UsernameUtils() {
     }
 
     private static final String[] SURNAME = {"赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈", "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许",

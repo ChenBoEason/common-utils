@@ -22,7 +22,7 @@ public class IDCardUtils {
     private IDCardUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IDCardUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(IDCardUtils.class);
 
 
     /**
@@ -38,7 +38,7 @@ public class IDCardUtils {
     /**
      * 省、直辖市代码表
      */
-    private static final String CITY_CODE[] = {
+    private static String CITY_CODE[] = {
             "11", "12", "13", "14", "15", "21", "22", "23", "31", "32", "33", "34", "35", "36", "37", "41",
             "42", "43", "44", "45", "46", "50", "51", "52", "53", "54", "61", "62", "63", "64", "65", "71",
             "81", "82", "91"
@@ -47,14 +47,14 @@ public class IDCardUtils {
     /**
      * 每位加权因子
      */
-    private static final int[] POWER = {
+    private static int[] POWER = {
             7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2
     };
 
     /**
      * 第18位校检码
      */
-    public static final String VERIFY_CODE[] = {
+    public static String VERIFY_CODE[] = {
             "1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2"
     };
 
@@ -178,7 +178,7 @@ public class IDCardUtils {
             try {
                 birthDate = new SimpleDateFormat("yyMMdd").parse(birthday);
             } catch (ParseException e) {
-                LOGGER.error("身份证生日信息格式化异常", e);
+                logger.error("身份证生日信息格式化异常", e);
             }
             Calendar cal = Calendar.getInstance();
             if (birthDate != null) {
@@ -257,7 +257,7 @@ public class IDCardUtils {
             try {
                 birthDate = new SimpleDateFormat("yy").parse(birthCode.substring(0, 2));
             } catch (ParseException e) {
-                LOGGER.error("身份证生日信息格式化异常", e);
+                logger.error("身份证生日信息格式化异常", e);
             }
             Calendar cal = Calendar.getInstance();
 
@@ -290,7 +290,7 @@ public class IDCardUtils {
                 iArr[i] = Integer.parseInt(String.valueOf(ca[i]));
             }
         } catch (NumberFormatException e) {
-            LOGGER.error("字符串转换数字异常", e);
+            logger.error("字符串转换数字异常", e);
         }
         return iArr;
     }

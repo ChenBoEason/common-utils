@@ -9,12 +9,12 @@ import org.apache.commons.lang3.StringUtils;
  * @DateTime: 2019-10-12 23:44
  * @Description: 手机号生成工具类
  */
-public class ChineseMobileUtils {
+public class MobileUtils {
 
-    private ChineseMobileUtils() {
+    private MobileUtils() {
     }
 
-    private static final int[] MOBILE_PREFIX = new int[]{133, 153, 177, 180, 145,
+    private static int[] MOBILE_PREFIX = new int[]{133, 153, 177, 180, 145,
             181, 189, 134, 135, 136, 137, 138, 139, 150, 151, 152, 157, 158, 159,
             178, 182, 183, 184, 187, 188, 130, 131, 132, 155, 156, 176, 185, 186,
             147, 170};

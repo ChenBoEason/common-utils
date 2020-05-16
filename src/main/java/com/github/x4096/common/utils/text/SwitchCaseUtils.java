@@ -24,13 +24,14 @@ public class SwitchCaseUtils {
      * hello_ -> hello
      * _hello_ -> hello
      *
-     * @param snakeCase
-     * @return
+     * @param snakeCase snakeCaseStr
+     * @return 蛇形命名法(snake case) -> 驼峰命名法(camel case)字符转换
      */
     public static String snake2Camel(String snakeCase) {
         if (StringUtils.isBlank(snakeCase)) {
             return snakeCase;
         }
+
         int index = StringUtils.indexOf(snakeCase, "_");
         if (index != -1) {
             StringBuilder sb = new StringBuilder();
@@ -39,7 +40,7 @@ public class SwitchCaseUtils {
                 if (i == 0) {
                     sb.append(strings[0]);
                 } else {
-                    sb.append(toUpperCaseFristChar(strings[i]));
+                    sb.append(toUpperCaseFirstChar(strings[i]));
                 }
             }
             return sb.toString();
@@ -57,13 +58,14 @@ public class SwitchCaseUtils {
      * hiHelloWorld -> hi_hello_world
      * Hello -> hello
      *
-     * @param camelCase
-     * @return
+     * @param camelCase camelCaseStr
+     * @return 驼峰命名法 -> 蛇形命名法
      */
     public static String camel2Snake(String camelCase) {
         if (StringUtils.isBlank(camelCase)) {
             return camelCase;
         }
+
         StringBuilder sb = new StringBuilder();
         char[] chars = camelCase.toCharArray();
         for (int i = 0, length = chars.length; i < length; i++) {
@@ -86,10 +88,10 @@ public class SwitchCaseUtils {
      * 将字符串首字母转换为大写
      * hello -> Hello
      *
-     * @param string
-     * @return
+     * @param string string
+     * @return 将字符串首字母转换为大写
      */
-    public static String toUpperCaseFristChar(String string) {
+    public static String toUpperCaseFirstChar(String string) {
         char[] charArray = string.toCharArray();
         charArray[0] -= 32;
         return String.valueOf(charArray);
@@ -100,10 +102,10 @@ public class SwitchCaseUtils {
      * 将首字母转换为小写
      * Hello -> hello
      *
-     * @param string
-     * @return
+     * @param string string
+     * @return 将首字母转换为小写
      */
-    public static String toLowerCaseFristChar(String string) {
+    public static String toLowerCaseFirstChar(String string) {
         char[] charArray = string.toCharArray();
         charArray[0] += 32;
         return String.valueOf(charArray);

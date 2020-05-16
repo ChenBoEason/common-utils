@@ -53,10 +53,13 @@ public class Triple<L, M, R> {
         if (this == obj) {
             return true;
         }
+
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
+
         Triple other = (Triple) obj;
+
         if (left == null) {
             if (other.left != null) {
                 return false;
@@ -64,6 +67,7 @@ public class Triple<L, M, R> {
         } else if (!left.equals(other.left)) {
             return false;
         }
+
         if (middle == null) {
             if (other.middle != null) {
                 return false;
@@ -71,14 +75,12 @@ public class Triple<L, M, R> {
         } else if (!middle.equals(other.middle)) {
             return false;
         }
+
         if (right == null) {
-            if (other.right != null) {
-                return false;
-            }
-        } else if (!right.equals(other.right)) {
-            return false;
+            return other.right == null;
+        } else {
+            return right.equals(other.right);
         }
-        return true;
     }
 
     @Override

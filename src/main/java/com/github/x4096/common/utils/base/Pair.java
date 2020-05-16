@@ -44,11 +44,13 @@ public class Pair<L, R> {
         if (this == obj) {
             return true;
         }
+
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
         Pair other = (Pair) obj;
+
         if (left == null) {
             if (other.left != null) {
                 return false;
@@ -56,14 +58,12 @@ public class Pair<L, R> {
         } else if (!left.equals(other.left)) {
             return false;
         }
+
         if (right == null) {
-            if (other.right != null) {
-                return false;
-            }
-        } else if (!right.equals(other.right)) {
-            return false;
+            return other.right == null;
+        } else{
+            return right.equals(other.right);
         }
-        return true;
     }
 
     @Override

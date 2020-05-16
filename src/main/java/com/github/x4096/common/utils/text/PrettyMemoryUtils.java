@@ -86,6 +86,7 @@ public class PrettyMemoryUtils {
         } else if ("PB".equals(type)) {
             return String.format(formatStr, (size)) + "PB";
         }
+
         return String.format(formatStr, (size)) + "B";
     }
 

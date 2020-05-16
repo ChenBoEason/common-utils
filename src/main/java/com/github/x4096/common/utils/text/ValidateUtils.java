@@ -91,21 +91,21 @@ public class ValidateUtils {
     /**
      * 时间格式 yyyy-MM-dd
      */
-    private static String REGEX_YEAR_MONTH_DAY = "((\\d{2}(([02468][048])|([13579][26]))[\\-/\\s]?((((0?[13578])|(1[02]))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-/\\s]?((((0?[13578])|(1[02]))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
+    private static final String REGEX_YEAR_MONTH_DAY = "((\\d{2}(([02468][048])|([13579][26]))[\\-/\\s]?((((0?[13578])|(1[02]))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-/\\s]?((((0?[13578])|(1[02]))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
     private static final Pattern REGEX_YEAR_MONTH_DAY_PATTERN = Pattern.compile(REGEX_YEAR_MONTH_DAY);
 
 
     /**
      * 时间格式 yyyy-MM-dd hh:mm:ss
      */
-    private static String REGEX_YEAR_MONTH_DAY_H_M_S_12 = REGEX_YEAR_MONTH_DAY + "(\\s(((0[0-9])|([1][0-2])):([0-5]?[0-9])((\\s)|(:([0-5]?[0-9]))?)))?";
+    private static final String REGEX_YEAR_MONTH_DAY_H_M_S_12 = REGEX_YEAR_MONTH_DAY + "(\\s(((0[0-9])|([1][0-2])):([0-5]?[0-9])((\\s)|(:([0-5]?[0-9]))?)))?";
     private static final Pattern REGEX_YEAR_MONTH_DAY_H_M_S_12_PATTERN = Pattern.compile(REGEX_YEAR_MONTH_DAY_H_M_S_12);
 
 
     /**
      * 时间格式 yyyy-MM-dd HH:mm:ss
      */
-    private static String REGEX_YEAR_MONTH_DAY_H_M_S_24 = REGEX_YEAR_MONTH_DAY + "(\\s(((0[0-9])|([1-2][0-3])):([0-5]?[0-9])((\\s)|(:([0-5]?[0-9]))?)))?";
+    private static final String REGEX_YEAR_MONTH_DAY_H_M_S_24 = REGEX_YEAR_MONTH_DAY + "(\\s(((0[0-9])|([1-2][0-3])):([0-5]?[0-9])((\\s)|(:([0-5]?[0-9]))?)))?";
     private static final Pattern REGEX_YEAR_MONTH_DAY_H_M_S_24_PATTERN = Pattern.compile(REGEX_YEAR_MONTH_DAY_H_M_S_24);
 
 

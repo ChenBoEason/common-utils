@@ -42,12 +42,12 @@ public class StringFormatterUtils {
     }
 
 
-    public static String format(final String messagePattern, Object... arg) {
+    public static String format(String messagePattern, Object... arg) {
         return arrayFormat(messagePattern, arg);
     }
 
 
-    public static String arrayFormat(final String messagePattern, final Object[] argArray) {
+    public static String arrayFormat(String messagePattern, Object[] argArray) {
         int i = 0;
         int j;
         // use string builder for better multicore performance

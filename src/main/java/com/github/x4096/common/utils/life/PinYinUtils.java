@@ -34,7 +34,7 @@ public class PinYinUtils {
      * 获取输入中文字符串拼音
      *
      * @param inputString 汉字串
-     * @return
+     * @return 获取输入中文字符串拼音
      */
     public static String getPinYin(String inputString) {
         if (StringUtils.isBlank(inputString)) {

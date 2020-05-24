@@ -1,6 +1,5 @@
 package com.github.x4096.common.utils.date;
 
-import com.github.x4096.common.utils.date.enums.DateEnum;
 import org.apache.commons.lang3.Validate;
 
 import java.util.Calendar;
@@ -75,8 +74,6 @@ public class DateUtils {
 
     /**
      * 获取当天星期几
-     *
-     * @return
      */
     public static String getWeekDayToDay() {
         return getWeekDay(new Date());
@@ -85,8 +82,6 @@ public class DateUtils {
 
     /**
      * 判断当天是否为周末
-     *
-     * @return
      */
     public static boolean isWeekendToDay() {
         Calendar cal = Calendar.getInstance();
@@ -101,8 +96,6 @@ public class DateUtils {
 
     /**
      * 是否同一天
-     *
-     * @return
      */
     public static boolean isSameDay(Date date1, Date date2) {
         return DateUtils.isSameDay(date1, date2);
@@ -111,8 +104,6 @@ public class DateUtils {
 
     /**
      * 是否同一时刻
-     *
-     * @return
      */
     public static boolean isSameTime(Date date1, Date date2) {
         return date1.compareTo(date2) == 0;
@@ -125,7 +116,7 @@ public class DateUtils {
      * @param date  需要判断的日期
      * @param start 判断范围起始时间
      * @param end   判断范围结束时间
-     * @return
+     * @return 判断日期是否在范围内，包含相等的日期
      */
     public static boolean isBetween(Date date, Date start, Date end) {
         if (date == null || start == null || end == null || start.after(end)) {
@@ -136,66 +127,50 @@ public class DateUtils {
 
 
     /**
-     * 获取指定时间 加减 月、天、周、秒等
-     *
-     * @param date     需要指定的时间
-     * @param dateEnum 操作类型,月、天等
-     * @param amount   操作数,如果时间回到过去则填写负数
-     * @return
-     */
-    public static Date conditions(Date date, DateEnum dateEnum, int amount) {
-        Calendar beforeTime = Calendar.getInstance();
-        beforeTime.setTime(date);
-        beforeTime.add(dateEnum.getCode(), amount);
-        return beforeTime.getTime();
-    }
-
-
-    /**
      * 加一月
      */
-    public static Date addMonths(Date date, int amount) {
-        return org.apache.commons.lang3.time.DateUtils.addMonths(date, amount);
+    public static Date addMonths(Date date, int months) {
+        return org.apache.commons.lang3.time.DateUtils.addMonths(date, months);
     }
 
 
     /**
      * 减一月
      */
-    public static Date subMonths(Date date, int amount) {
-        return org.apache.commons.lang3.time.DateUtils.addMonths(date, -amount);
+    public static Date subMonths(Date date, int months) {
+        return org.apache.commons.lang3.time.DateUtils.addMonths(date, -months);
     }
 
 
     /**
      * 加一周
      */
-    public static Date addWeeks(final Date date, int amount) {
-        return org.apache.commons.lang3.time.DateUtils.addWeeks(date, amount);
+    public static Date addWeeks(Date date, int weeks) {
+        return org.apache.commons.lang3.time.DateUtils.addWeeks(date, weeks);
     }
 
 
     /**
      * 减一周
      */
-    public static Date subWeeks(Date date, int amount) {
-        return org.apache.commons.lang3.time.DateUtils.addWeeks(date, -amount);
+    public static Date subWeeks(Date date, int weeks) {
+        return org.apache.commons.lang3.time.DateUtils.addWeeks(date, -weeks);
     }
 
 
     /**
      * 加一天
      */
-    public static Date addDays(Date date, final int amount) {
-        return org.apache.commons.lang3.time.DateUtils.addDays(date, amount);
+    public static Date addDays(Date date, int days) {
+        return org.apache.commons.lang3.time.DateUtils.addDays(date, days);
     }
 
 
     /**
      * 减一天
      */
-    public static Date subDays(Date date, int amount) {
-        return org.apache.commons.lang3.time.DateUtils.addDays(date, -amount);
+    public static Date subDays(Date date, int days) {
+        return org.apache.commons.lang3.time.DateUtils.addDays(date, -days);
     }
 
 
@@ -205,6 +180,7 @@ public class DateUtils {
     public static Date addHours(Date date, int amount) {
         return org.apache.commons.lang3.time.DateUtils.addHours(date, amount);
     }
+
 
     /**
      * 减一小时
@@ -233,16 +209,16 @@ public class DateUtils {
     /**
      * 加一秒
      */
-    public static Date addSeconds(Date date, int amount) {
-        return org.apache.commons.lang3.time.DateUtils.addSeconds(date, amount);
+    public static Date addSeconds(Date date, int seconds) {
+        return org.apache.commons.lang3.time.DateUtils.addSeconds(date, seconds);
     }
 
 
     /**
-     * 减一秒.
+     * 减一秒
      */
-    public static Date subSeconds(Date date, int amount) {
-        return org.apache.commons.lang3.time.DateUtils.addSeconds(date, -amount);
+    public static Date subSeconds(Date date, int seconds) {
+        return org.apache.commons.lang3.time.DateUtils.addSeconds(date, -seconds);
     }
 
 
@@ -282,7 +258,7 @@ public class DateUtils {
 
 
     /**
-     * 2017-1-23 07:33:23, 则返回2017-1-22 00:00:00
+     * 获取下周第一天开始时间 2020-05-17 07:33:23, 则返回2020-05-18 00:00:00
      */
     public static Date nextWeek(Date date) {
         return org.apache.commons.lang3.time.DateUtils.truncate(addDays(date, 8 - getDayOfWeek(date)), Calendar.DATE);
@@ -290,10 +266,18 @@ public class DateUtils {
 
 
     /**
-     * 2016-11-10 07:33:23, 则返回2016-11-10 00:00:00
+     * 获取一天的开始 2016-11-10 07:33:23, 则返回2016-11-10 00:00:00
      */
     public static Date beginOfDate(Date date) {
         return org.apache.commons.lang3.time.DateUtils.truncate(date, Calendar.DATE);
+    }
+
+
+    /**
+     * 获取一天的结束时间 2020-05-17 00:59:59 2020-05-17 23:59:59
+     */
+    public static Date endOfDate(Date date) {
+        return subSeconds(addDays(beginOfDate(date), 1), 1);
     }
 
 

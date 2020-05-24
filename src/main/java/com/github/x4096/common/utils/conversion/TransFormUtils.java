@@ -2,7 +2,6 @@ package com.github.x4096.common.utils.conversion;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -12,13 +11,10 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
-import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 
 /**
  * @Author: 0x4096.peng@gmail.com
@@ -37,72 +33,8 @@ public class TransFormUtils {
     private static ObjectMapper objectMapper = new ObjectMapper();
 
 
-    /**
-     * 对象转map
-     *
-     * @param bean
-     * @return
-     */
-    public static Map<String, String> beanToMap(Object bean) {
-        Map<String, String> map;
-        try {
-            map = BeanUtils.describe(bean);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            logger.error("", e);
-            return null;
-        }
-        map.remove("class");
-        return map;
-    }
 
 
-    /**
-     * map转对象
-     *
-     * @param map
-     * @param clazz
-     * @param <T>
-     * @return
-     */
-    public static <T> T mapToBean(Map<String, String> map, Class<T> clazz) {
-        T bean = null;
-        try {
-            bean = clazz.newInstance();
-            BeanUtils.populate(bean, map);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            logger.error("", e);
-        }
-        return bean;
-    }
-
-    /**
-     * 对象转JSON
-     */
-    public static String beanToJSON(Object bean) {
-        String str = null;
-        try {
-            str = objectMapper.writeValueAsString(bean);
-        } catch (JsonProcessingException e) {
-            logger.error("", e);
-        }
-        return str;
-    }
-
-    /**
-     * JSON转对象
-     *
-     * @return
-     */
-    public static <T> T jsonToBean(String json, Class<T> clazz) {
-        T bean = null;
-        try {
-            bean = clazz.newInstance();
-            bean = objectMapper.readValue(json, clazz);
-        } catch (InstantiationException | IllegalAccessException | IOException e) {
-            logger.error("", e);
-        }
-        return bean;
-    }
 
     /**
      * XML转JSON

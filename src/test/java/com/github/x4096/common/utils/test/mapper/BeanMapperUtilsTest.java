@@ -2,9 +2,12 @@ package com.github.x4096.common.utils.test.mapper;
 
 import com.alibaba.fastjson.JSON;
 import com.github.x4096.common.utils.mapper.BeanMapperUtils;
+import com.github.x4096.common.utils.mapper.XmlMapperUtils;
+import com.github.x4096.common.utils.test.pojo.Student;
 import com.github.x4096.common.utils.test.pojo.dto.TestDTO;
 import com.github.x4096.common.utils.test.pojo.vo.TestVO;
 import com.github.x4096.common.utils.text.RandomStringUtils;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 
 import java.time.Clock;
@@ -36,7 +39,7 @@ public class BeanMapperUtilsTest {
 
         long end = Clock.systemUTC().millis();
 
-        System.err.println(end -startTime);
+        System.err.println(end - startTime);
         System.err.println(JSON.toJSONString(testVO));
 
 
@@ -46,11 +49,28 @@ public class BeanMapperUtilsTest {
 
         end = Clock.systemUTC().millis();
 
-        System.err.println(end -startTime);
+        System.err.println(end - startTime);
         System.err.println(JSON.toJSONString(testVO2));
 
 
         System.err.println(RandomStringUtils.uuid32());
+    }
+
+
+    @Test
+    public void t1() {
+        Student student = new Student();
+        student.setUsername("name");
+        student.setAge(1);
+
+
+        String xml = XmlMapperUtils.toXml(student, false, false);
+
+        System.err.println(xml);
+
+        String json = BeanMapperUtils.xmlToJSON(xml);
+
+        System.err.println(json);
 
     }
 

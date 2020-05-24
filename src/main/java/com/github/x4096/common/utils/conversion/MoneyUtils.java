@@ -26,37 +26,52 @@ public class MoneyUtils {
     /**
      * 元转分
      */
-    private static Pattern y2FPattern = Pattern.compile("^[0-9]+(.[0-9]{0,2})?$");
+    private static final Pattern y2FPattern = Pattern.compile("^[0-9]+(.[0-9]{0,2})?$");
 
     /**
      * 分转元
      */
-    private static Pattern f2YPattern = Pattern.compile("^[0-9]+$");
+    private static final Pattern f2YPattern = Pattern.compile("^[0-9]+$");
     private static final int MULTIPLIER = 100;
 
 
     /**
      * 判断格式是否为元
-     *
-     * @param yuan
-     * @return
      */
-    public static boolean isYuan(final String yuan) {
-        if (StringUtils.isBlank(yuan)) {
-            return false;
-        }
-        return y2FPattern.matcher(yuan).matches();
+    public static boolean isYuan(String yuan) {
+        return StringUtils.isNotBlank(yuan) && y2FPattern.matcher(yuan).matches();
     }
 
 
     /**
      * 判断格式是否为元
-     *
-     * @param yuan
-     * @return
      */
-    public static boolean isYuan(final double yuan) {
+    public static boolean isYuan(double yuan) {
         return isYuan(String.valueOf(yuan));
+    }
+
+
+    /**
+     * 是否为有效元
+     * 即排除
+     * 0
+     * 0.0
+     * 0.00
+     */
+    public static boolean isValidYuan(String yuan) {
+        return !("0".equals(yuan) || "0.0".equals(yuan) || "0.00".equals(yuan)) && isYuan(yuan);
+    }
+
+
+    /**
+     * 是否为有效元
+     * 即排除
+     * 0
+     * 0.0
+     * 0.00
+     */
+    public static boolean isValidYuan(double yuan) {
+        return isValidYuan(String.valueOf(yuan));
     }
 
 
@@ -66,11 +81,8 @@ public class MoneyUtils {
      * #    1
      * #.#  1.2
      * #.## 1.23
-     *
-     * @param yuan
-     * @return
      */
-    public static int changeY2F(final String yuan) {
+    public static int changeY2F(String yuan) {
         if (!isYuan(yuan)) {
             throw new IllegalArgumentException("元转分,参数格式不正确!转换内容: " + yuan);
         }
@@ -87,32 +99,26 @@ public class MoneyUtils {
         double temp = number.doubleValue() * 100.0;
         format.setGroupingUsed(false);
         format.setMaximumFractionDigits(0);
-        return Integer.valueOf(format.format(temp));
+        return Integer.parseInt(format.format(temp));
     }
 
 
     /**
      * 元转分
-     * 支付dubbo格式
+     * 支付double格式
      * #    1
      * #.#  1.2
      * #.## 1.23
-     *
-     * @param yuan
-     * @return
      */
-    public static int changeY2F(final double yuan) {
+    public static int changeY2F(double yuan) {
         return changeY2F(String.valueOf(yuan));
     }
 
 
     /**
      * 分转元
-     *
-     * @param fen
-     * @return
      */
-    public static String changeF2Y(final String fen) {
+    public static String changeF2Y(String fen) {
         Matcher matcher = f2YPattern.matcher(fen);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("分转元,参数格式不正确!转换内容: " + fen);
@@ -123,11 +129,8 @@ public class MoneyUtils {
 
     /**
      * 分转元
-     *
-     * @param fen
-     * @return
      */
-    public static String changeF2Y(final int fen) {
+    public static String changeF2Y(int fen) {
         return changeF2Y(String.valueOf(fen));
     }
 
